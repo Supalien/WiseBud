@@ -3,19 +3,28 @@ import 'package:wisebud/models/trip.dart';
 
 class Budget {
   String name;
+  String? desc;
   int amount;
-  int? periodDays = 0;
+  late int periodDays;
 
-  Trip? trip;
+  late Trip trip;
 
-  List<Expense>? expenses;
+  late List<Expense> expenses;
 
   String? tripId; // foreign key
   String? id;
 
-  Budget({required this.name, required this.amount, this.periodDays, this.trip, this.expenses, this.tripId, this.id}){
-    periodDays = periodDays ?? 0;
-    for (Expense e in expenses?? []) {
+  Budget({
+    required this.name,
+    this.desc,
+    required this.amount,
+    this.periodDays = 0,
+    List<Expense>? expenses,
+    this.tripId,
+    this.id,
+  }) {
+    this.expenses = expenses ?? [];
+    for (Expense e in this.expenses) {
       // print('${e.desc}: ${e.amount}, from $trip');
       e.budget = this;
     }

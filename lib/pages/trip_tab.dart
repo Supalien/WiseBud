@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/utils.dart';
 
 class TripTab extends StatefulWidget {
-  final Trip trip;
-  const TripTab({super.key, required this.trip});
+  const TripTab({super.key});
 
   @override
   State<TripTab> createState() => _TripTabState();
 }
 
 class _TripTabState extends State<TripTab> {
-  int count = 0;
   @override
   Widget build(BuildContext context) {
+    Trip trip = context.watch<Trip>();
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 50,
           children: [
-            BudgetInfoWidget(title: "Trip Budget", amount: widget.trip.totalExpenses, total: widget.trip.totalBudget),
-            BudgetInfoWidget(title: "Monthly budget", amount: widget.trip.monthlyExpenses, total: widget.trip.monthlyBudget),
+            BudgetInfoWidget(title: "Trip Budget", currency: trip.defaultCurrency, amount: trip.totalExpenses, total: trip.totalBudget),
+            BudgetInfoWidget(title: "Monthly budget", amount: trip.monthlyExpenses, currency: trip.defaultCurrency, total: trip.monthlyBudget),
           ],
         )
       ],
@@ -29,29 +29,24 @@ class _TripTabState extends State<TripTab> {
   }
 }
 
-class BudgetInfoWidget extends StatefulWidget {
+class BudgetInfoWidget extends StatelessWidget {
   final String title;
-  final String? currency;
+  final String currency;
   final double amount;
   final double total;
+  const BudgetInfoWidget({super.key, required this.title, required this.currency, required this.amount, required this.total});
 
-  const BudgetInfoWidget({super.key, required this.title, this.currency, required this.amount, required this.total});
-  @override
-  State<BudgetInfoWidget> createState() => _BudgetInfoWidgetState();
-}
-
-class _BudgetInfoWidgetState extends State<BudgetInfoWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(widget.title),
+        Text(title),
         Row(
           children: [
-            Text(formatDouble(widget.amount)),
+            Text(formatDouble(amount)),
             Text(' / '),
-            Text(formatDouble(widget.total)),
-            Text(widget.currency ?? " USD")
+            Text(formatDouble(total)),
+            Text(currency)
           ],
         )
       ],
