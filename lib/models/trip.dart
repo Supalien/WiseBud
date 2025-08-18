@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/user.dart';
 import 'package:wisebud/utils.dart';
 
-class Trip {
+class Trip extends ChangeNotifier{
   String name;
   DateTime? createdAt;
   List<String>? destinations;
@@ -38,6 +39,19 @@ class Trip {
     }
   }
 
+  double get totalBudget => 
+    (budgets ?? []).fold(0.0, (sum, b) => (b.periodDays == null || b.periodDays == 0)? sum + b.amount : sum + b.amount*lengthDays! / b.periodDays!);
+  
+  double get totalExpenses =>
+    (expenses ?? []).fold(0, (sum, e) => sum + e.amount);
+
+  double get monthlyBudget =>
+    (budgets?.where((b) => b.periodDays! > 0) ?? []).fold(0, (sum, b) => sum + b.amount*30 / b.periodDays!);
+
+  double get monthlyExpenses =>
+    (expenses?.where((e) => e.budget!.periodDays! > 0 && isInThisMonth(e.time!))?? []).fold(0, (sum, e) => sum + e.amount);
+
+
   // Convert Supabase row → Trip
   factory Trip.fromRow(Map<String, dynamic> map) {
     return Trip(
@@ -53,21 +67,7 @@ class Trip {
     );
   }
 
-  double getTotalBudget(){
-    return (budgets ?? []).fold(0.0, (sum, b) => (b.periodDays == null || b.periodDays == 0)? sum + b.amount : sum + b.amount*lengthDays! / b.periodDays!);
-  }
-
-  double getTotalExpenses(){
-    return (expenses ?? []).fold(0, (sum, e) => sum + e.amount);
-  }
-
-  double getMonthlyBudget(){
-    return (budgets?.where((b) => b.periodDays! > 0) ?? []).fold(0, (sum, b) => sum + b.amount*30 / b.periodDays!);
-  }
-
-  double getMonthlyExpenses(){
-    return (expenses?.where((e) => e.budget!.periodDays! > 0 && isInThisMonth(e.time!))?? []).fold(0, (sum, e) => sum + e.amount);
-  }
+  //
 }
 
 /**

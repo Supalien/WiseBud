@@ -18,7 +18,7 @@ Future<void> main() async {
 final SupabaseClient supabase = Supabase.instance.client;
 //fake data
 final Trip fakeTrip = Trip(
-  name: 'mytrip',
+  name: 'trip name',
   destinations: ['Narnia', 'Rivendell', 'Asgard'],
   startDate: DateTime(2030, 1, 1),
   endDate: DateTime(2030, 6, 31),
@@ -69,13 +69,13 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 54, 170, 190)),
       ),
-      home: DefaultTabController(length: 3, child: MyHomePage(trip: fakeTrip))
+      home: DefaultTabController(length: 3, child: MyHomePage())
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.trip});
+  const MyHomePage({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -86,8 +86,6 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final Trip trip;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -96,17 +94,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    Trip trip = widget.trip;
+    
+    // FOR TESTING:
+    Trip trip = fakeTrip; // CHANGE LATER
+    
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.primary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
@@ -125,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () => print('FAB pressed'),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
       bottomNavigationBar: TabBar(tabs: [
         Tab(icon: Icon(Icons.home)),
         Tab(icon: Icon(Icons.money)),

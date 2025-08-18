@@ -20,8 +20,8 @@ class _TripTabState extends State<TripTab> {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 50,
           children: [
-            BudgetInfoWidget(title: "Trip Budget", amount: widget.trip.getTotalExpenses(), total: widget.trip.getTotalBudget()),
-            BudgetInfoWidget(title: "Monthly budget", amount: widget.trip.getMonthlyExpenses(), total: widget.trip.getMonthlyBudget()),
+            BudgetInfoWidget(title: "Trip Budget", amount: widget.trip.totalExpenses, total: widget.trip.totalBudget),
+            BudgetInfoWidget(title: "Monthly budget", amount: widget.trip.monthlyExpenses, total: widget.trip.monthlyBudget),
           ],
         )
       ],
