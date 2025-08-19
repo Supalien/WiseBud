@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
@@ -64,7 +66,8 @@ class Trip extends ChangeNotifier {
   )).fold(0, (sum, b) => sum + b.amount * 30 / b.periodDays);
 
   double get monthlyExpenses => (expenses.where(
-    (e) =>  e.budget != null && e.budget!.periodDays > 0 && isInThisMonth(e.time),
+    (e) =>
+        e.budget != null && e.budget!.periodDays > 0 && isInThisMonth(e.time),
   )).fold(0, (sum, e) => sum + e.amount);
 
   // Convert Supabase row → Trip
@@ -81,6 +84,35 @@ class Trip extends ChangeNotifier {
       endDate: map['end_date'] != null ? DateTime.parse(map['end_date']) : null,
     );
   }
+
+  factory Trip.fromJson(Map<String, dynamic> m) {
+    var t = Trip(
+      name: m['name'],
+      destinations: List<String>.from(json.decode(m['destinations'])),
+      startDate: DateTime.parse(m['startDate']),
+      endDate: DateTime.parse(m['endDate']),
+      defaultCurrency: m['defaultCurrency'],
+      budgets: List<Budget>.from(json.decode(m['budgets']).map((b) => Budget.fromJson(b))),
+      expenses: List<Expense>.from(json.decode(m['expenses']).map((e) => Expense.fromJson(e))),
+    );
+    if (m.containsKey('createdAt')) t.createdAt = DateTime.parse(m['createdAt']);
+    if (m.containsKey('id')) t.id = m['id'];
+    if (m.containsKey('userId')) t.userId = m['userId'];
+    return t;
+  }
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'destinations': json.encode(destinations),
+    'startDate': startDate.toString(),
+    'endDate': endDate.toString(),
+    'defaultCurrency': defaultCurrency,
+    'budgets': json.encode(budgets),
+    'expenses': json.encode(expenses),
+    if (createdAt != null) 'createdAt': createdAt,
+    if (id != null) 'id': id,
+    if (userId != null) 'userId': userId,
+  };
 
   void addBudget(Budget b) {
     budgets.add(b);

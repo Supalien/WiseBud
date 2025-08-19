@@ -32,7 +32,7 @@ class Expense {
     var e = Expense(
       amount: m['amount'],
       desc: m['desc'],
-      time: m['time'],
+      time: DateTime.parse(m['time']),
       currency: m['currency']
     );
     if (m.containsKey('id')) e.id = m['id'];
@@ -44,7 +44,7 @@ class Expense {
   Map<String, dynamic> toJson() => {
     'amount': amount,
     'desc': desc,
-    'time': time,
+    'time': time.toString(),
     'currency': currency,
     if (id != null) 'id': id,
     if (tripId != null) 'tripId': tripId,
