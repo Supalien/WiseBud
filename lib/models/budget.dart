@@ -31,6 +31,9 @@ class Budget {
       e.budget = this;
     }
   }
+  
+  double get totalExpenses => expenses.fold(0, (sum, e) => sum + e.amount);
+  
   factory Budget.fromJson(Map<String, dynamic> m) {
     var b = Budget(
       name: m['name'],

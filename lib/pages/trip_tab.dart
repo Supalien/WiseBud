@@ -20,8 +20,8 @@ class _TripTabState extends State<TripTab> {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 50,
           children: [
-            BudgetInfoWidget(title: "Trip Budget", currency: trip.defaultCurrency, amount: trip.totalExpenses, total: trip.totalBudget),
-            BudgetInfoWidget(title: "Monthly budget", amount: trip.monthlyExpenses, currency: trip.defaultCurrency, total: trip.monthlyBudget),
+            TripBudgetInfoWidget(title: "Trip Budget", currency: trip.defaultCurrency, amount: trip.totalExpenses, total: trip.totalBudget),
+            TripBudgetInfoWidget(title: "Monthly budget", amount: trip.monthlyExpenses, currency: trip.defaultCurrency, total: trip.monthlyBudget),
           ],
         )
       ],
@@ -29,12 +29,12 @@ class _TripTabState extends State<TripTab> {
   }
 }
 
-class BudgetInfoWidget extends StatelessWidget {
+class TripBudgetInfoWidget extends StatelessWidget {
   final String title;
   final String currency;
   final double amount;
   final double total;
-  const BudgetInfoWidget({super.key, required this.title, required this.currency, required this.amount, required this.total});
+  const TripBudgetInfoWidget({super.key, required this.title, required this.currency, required this.amount, required this.total});
 
   @override
   Widget build(BuildContext context) {

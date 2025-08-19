@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
+import 'package:wisebud/pages/budget_tab.dart';
 // import 'package:wisebud/pages/login_page.dart';
 import 'package:wisebud/pages/trip_tab.dart';
 import 'package:provider/provider.dart';
@@ -127,7 +128,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
+    // This method is rerun every time setState is called,
 
     // FOR TESTING:
     Trip trip = fakeTrip; // CHANGE LATER
@@ -145,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: TabBarView(
           children: [
             TripTab(),
-            Text("Budgets tab"),
+            BudgetTab(),
             Text('Auth tab'),
           ],
         ),
@@ -157,8 +158,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: TabBar(
         tabs: [
-          Tab(icon: Icon(Icons.home)),
-          Tab(icon: Icon(Icons.money)),
+          Tab(icon: Icon(Icons.home_filled)),
+          Tab(icon: Icon(Icons.monetization_on)),
           Tab(icon: Icon(Icons.account_circle)),
         ],
       ),
