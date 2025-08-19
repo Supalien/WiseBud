@@ -16,7 +16,7 @@ class Expense {
 
   Expense({
     required this.amount,
-    this.desc = "Add a description to this expense",
+    this.desc = "This expense lacks a description.",
     DateTime? time,
     this.currency = "USD",
     this.trip,
@@ -27,4 +27,27 @@ class Expense {
   }) {
     this.time = time ?? DateTime.now();
   }
+
+  factory Expense.fromJson(Map<String, dynamic> m) {
+    var e = Expense(
+      amount: m['amount'],
+      desc: m['desc'],
+      time: m['time'],
+      currency: m['currency']
+    );
+    if (m.containsKey('id')) e.id = m['id'];
+    if (m.containsKey('tripId')) e.tripId = m['tripId'];
+    if (m.containsKey('budgetId')) e.budgetId = m['budgetId'];
+    return e;
+  }
+
+  Map<String, dynamic> toJson() => {
+    'amount': amount,
+    'desc': desc,
+    'time': time,
+    'currency': currency,
+    if (id != null) 'id': id,
+    if (tripId != null) 'tripId': tripId,
+    if (budgetId != null) 'budgetId': budgetId,
+  };
 }
