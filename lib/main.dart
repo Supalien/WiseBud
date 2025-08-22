@@ -104,6 +104,9 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 54, 170, 190),
         ),
       ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurpleAccent, brightness: Brightness.dark)
+      ),
       home: DefaultTabController(length: 3, child: MyHomePage()),
     );
   }
@@ -131,14 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
     // This method is rerun every time setState is called,
 
     // FOR TESTING:
-    Trip trip = fakeTrip; // CHANGE LATER
+    // Trip trip = fakeTrip; // CHANGE LATER
+    print(Theme.of(context).colorScheme.primary);
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(trip.name),
+        title: Text(context.select<Trip, String>((t) => t.name)),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it

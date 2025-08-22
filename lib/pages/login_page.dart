@@ -1,10 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:supabase_auth_ui/supabase_auth_ui.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:wisebud/main.dart';
 // import 'package:wisebud/pages/account_page.dart';
 

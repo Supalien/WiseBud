@@ -7,7 +7,7 @@ class Budget {
   String name;
   String? desc;
   int amount;
-  late int periodDays;
+  late int periodDays; // TODO: need to understand how to proccess monthly budgets when months have dynamic lengths. (maybe average of months length in the period of the trip?)
 
   late Trip trip;
 
