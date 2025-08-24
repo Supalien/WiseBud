@@ -169,6 +169,28 @@ class _MyHomePageState extends State<MyHomePage> {
           Tab(icon: Icon(Icons.account_circle)),
         ],
       ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(child: Text("Trips", textScaler: TextScaler.linear(1.5))),
+                TextButton.icon(onPressed: (){}, label: Text("New Trip"), icon: Icon(Icons.add_circle_sharp),)
+              ],
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  Text("Trip 1"),
+                  Text("Trip 2"),
+                  Text("Trip 3"),
+                  Text("Trip 4"),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
