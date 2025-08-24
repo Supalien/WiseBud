@@ -53,7 +53,7 @@ class Trip extends ChangeNotifier {
   }
 
   double get totalBudget => budgets.fold(
-    0.0,
+    0,
     (sum, b) => (b.periodDays == 0)
         ? sum + b.amount
         : sum + b.amount * lengthDays / b.periodDays,

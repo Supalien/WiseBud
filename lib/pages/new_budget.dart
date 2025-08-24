@@ -18,10 +18,11 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add a budget")),
+      appBar: AppBar(title: Text("New Budget")),
       body: Form(
         key: _formKey,
         child: Column(
+          spacing: 10.5,
           children: [
             TextFormField(
               onSaved: (newValue) => name = newValue!,
@@ -52,11 +53,15 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
               },
               keyboardType: TextInputType.number,
             ),
+
             Divider(),
+
             TextFormField(
               onSaved: (newValue) => desc = newValue!,
               decoration: InputDecoration(hintText: "Enter description", labelText: "Description"),
             ),
+
+            Divider(),
 
             ElevatedButton(onPressed: () {
               if (_formKey.currentState!.validate()){

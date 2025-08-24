@@ -4,6 +4,7 @@ import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/pages/budget_tab.dart';
+import 'package:wisebud/pages/new_expense.dart';
 // import 'package:wisebud/pages/login_page.dart';
 import 'package:wisebud/pages/trip_tab.dart';
 import 'package:provider/provider.dart';
@@ -70,6 +71,7 @@ final Trip fakeTrip = Trip(
     ),
   ],
 );
+final Trip fakeTrip2 = Trip(name: "my second trip");
 
 Trip getCurrentTrip() {
   // NOT IMPLEMENTED, should get the current trip from storage or cloud
@@ -156,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read<Trip>().addExpense(Expense(amount: 100)),
+        onPressed: () => _newExpense(context),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
@@ -170,6 +172,23 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+Future<void> _newExpense(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NewExpenseScreen()),
+    );
+
+    if (!context.mounted) return; // widget doesnt exist
+    if (result == null) return; // result of back button
+
+    Expense expense = Expense(amount: result.amount, desc: result.desc, currency: result.currency, time: result.time);
+    if (result.budget is Budget){
+      (result.budget as Budget).addExpense(expense);
+    }
+    context.read<Trip>().addExpense(expense);
+
+  }
 
 extension ContextExtension on BuildContext {
   void showSnackBar(String message, {bool isError = false}) {

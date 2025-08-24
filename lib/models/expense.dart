@@ -2,7 +2,7 @@ import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/trip.dart';
 
 class Expense {
-  int amount;
+  double amount;
   late String desc;
   late DateTime time;
   late String currency; // make it an enum instead of String

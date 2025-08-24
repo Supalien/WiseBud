@@ -25,12 +25,17 @@ class _BudgetTabState extends State<BudgetTab> {
             shrinkWrap: true,
             crossAxisCount: 2,
             children: List<Widget>.from(
-              budgets.map((b) => BudgetInfoWidget(budget: b)),
+              budgets.map(
+                (b) => ChangeNotifierProvider.value(
+                  value: b,
+                  child: BudgetInfoWidget(),
+                ),
+              ),
             ),
           ),
           ElevatedButton(
             onPressed: () {
-              _createNewBudget(context);
+              _newBudget(context);
             },
             child: Text("New Budget"),
           ),
@@ -39,7 +44,7 @@ class _BudgetTabState extends State<BudgetTab> {
     );
   }
 
-  Future<void> _createNewBudget(BuildContext context) async {
+  Future<void> _newBudget(BuildContext context) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => NewBudgetScreen()),
@@ -48,19 +53,23 @@ class _BudgetTabState extends State<BudgetTab> {
     if (!context.mounted) return; // widget doesnt exist
     if (result == null) return; // back button
 
-    Budget nb = Budget(name: result.name, amount: result.amount, desc: result.desc);
+    Budget nb = Budget(
+      name: result.name,
+      amount: result.amount,
+      desc: result.desc,
+    );
     context.read<Trip>().addBudget(nb);
-    setState((){});
+    setState(() {});
   }
 }
 
 // make this a card widget
 class BudgetInfoWidget extends StatelessWidget {
-  final Budget budget;
-  const BudgetInfoWidget({super.key, required this.budget});
+  const BudgetInfoWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Budget budget = context.watch<Budget>();
     final bool isOverBudget = budget.totalExpenses >= budget.amount;
     return Container(
       decoration: BoxDecoration(

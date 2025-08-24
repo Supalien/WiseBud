@@ -1,13 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
 
-class Budget {
+class Budget extends ChangeNotifier {
   String name;
   String? desc;
   int amount;
-  late int periodDays; // TODO: need to understand how to proccess monthly budgets when months have dynamic lengths. (maybe average of months length in the period of the trip?)
+  late int periodDays; // TODO: need to figure out how to proccess monthly budgets when months have dynamic lengths. (maybe average of months length in the period of the trip?)
 
   late Trip trip;
 
@@ -27,7 +28,6 @@ class Budget {
   }) {
     this.expenses = expenses ?? [];
     for (Expense e in this.expenses) {
-      // print('${e.desc}: ${e.amount}, from $trip');
       e.budget = this;
     }
   }
@@ -45,6 +45,11 @@ class Budget {
     if (m.containsKey('id')) b.id = m['id'];
     if (m.containsKey('tripId')) b.tripId = m['tripId'];
     return b;
+  }
+
+  void addExpense(Expense ex){
+    expenses.add(ex);
+    notifyListeners();
   }
 
   Map<String, dynamic> toJson() => {

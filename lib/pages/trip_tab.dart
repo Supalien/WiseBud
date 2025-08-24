@@ -3,14 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/utils.dart';
 
-class TripTab extends StatefulWidget {
+class TripTab extends StatelessWidget {
   const TripTab({super.key});
 
-  @override
-  State<TripTab> createState() => _TripTabState();
-}
-
-class _TripTabState extends State<TripTab> {
   @override
   Widget build(BuildContext context) {
     Trip trip = context.watch<Trip>();
@@ -43,10 +38,7 @@ class TripBudgetInfoWidget extends StatelessWidget {
         Text(title),
         Row(
           children: [
-            Text(formatDouble(amount)),
-            Text(' / '),
-            Text(formatDouble(total)),
-            Text(currency)
+            Text("${formatDouble(amount)} / ${formatDouble(total)} $currency")
           ],
         )
       ],
