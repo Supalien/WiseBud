@@ -63,7 +63,6 @@ class _BudgetTabState extends State<BudgetTab> {
   }
 }
 
-// make this a card widget
 class BudgetInfoWidget extends StatelessWidget {
   const BudgetInfoWidget({super.key});
 
@@ -71,20 +70,30 @@ class BudgetInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Budget budget = context.watch<Budget>();
     final bool isOverBudget = budget.totalExpenses >= budget.amount;
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: isOverBudget ? Colors.red : Colors.black,
-          width: 2.0,
-        ),
-      ),
-      child: Column(
-        children: [
-          Text(budget.name),
-          Text(
-            '${formatDouble(budget.totalExpenses)} / ${budget.amount} ${context.read<Trip>().defaultCurrency}',
+    return Material(
+      child: Ink(
+        // margin: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isOverBudget ? Colors.red : Colors.black,
+            width: 2.0,
           ),
-        ],
+        ),
+        child: InkWell(
+          customBorder: CircleBorder(),
+          onTap: (){}, // TODO: open budget editor screen
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(budget.name),
+              Text(
+                '${formatDouble(budget.totalExpenses)} / ${budget.amount} ${context.read<Trip>().defaultCurrency}',
+              ),
+              Text("${100 * budget.totalExpenses / budget.amount}%")
+            ],
+          ),
+        ),
       ),
     );
   }
