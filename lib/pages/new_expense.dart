@@ -42,6 +42,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
                 }
                 return null;
               },
+              autofocus: true,
             ),
             Divider(),
             TextFormField(

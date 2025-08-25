@@ -38,6 +38,7 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
                 }
                 return null;
               },
+              autofocus: true,
             ),
             TextFormField(
               onSaved: (newValue) => amount = int.parse(newValue!),

@@ -104,11 +104,18 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 54, 170, 190),
+          primary: Color.fromARGB(255, 54, 170, 190)
         ),
       ),
       darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurpleAccent, brightness: Brightness.dark)
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color.fromARGB(202, 56, 2, 94),
+          brightness: Brightness.dark,
+          primary: Color.fromARGB(255, 126, 36, 190),
+          dynamicSchemeVariant: DynamicSchemeVariant.rainbow
+        )
       ),
+      themeMode: ThemeMode.dark,
       home: DefaultTabController(length: 3, child: MyHomePage()),
     );
   }
@@ -138,7 +145,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // FOR TESTING:
     // Trip trip = fakeTrip; // CHANGE LATER
     print(Theme.of(context).colorScheme.primary);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -146,16 +152,12 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(context.select<Trip, String>((t) => t.name)),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: TabBarView(
-          children: [
-            TripTab(),
-            BudgetTab(),
-            Text('Auth tab'),
-          ],
-        ),
+      body: TabBarView(
+        children: [
+          TripTab(),
+          BudgetTab(),
+          Text('Auth tab'),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _newExpense(context),
@@ -172,11 +174,19 @@ class _MyHomePageState extends State<MyHomePage> {
       drawer: Drawer(
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(child: Text("Trips", textScaler: TextScaler.linear(1.5))),
-                TextButton.icon(onPressed: (){}, label: Text("New Trip"), icon: Icon(Icons.add_circle_sharp),)
-              ],
+            SizedBox(
+              height: 75,
+              child: DrawerHeader(
+                margin: EdgeInsets.all(0),
+                padding: EdgeInsetsGeometry.all(0),
+                child: Row(
+                  children: [
+                    Padding(padding: EdgeInsetsGeometry.all(5)),
+                    Expanded(child: Text("Trips", textScaler: TextScaler.linear(1.5))),
+                    TextButton.icon(onPressed: (){}, label: Text("New Trip"), icon: Icon(Icons.add_circle_sharp),)
+                  ],
+                ),
+              ),
             ),
             Expanded(
               child: ListView(

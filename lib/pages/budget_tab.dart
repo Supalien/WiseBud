@@ -18,12 +18,16 @@ class _BudgetTabState extends State<BudgetTab> {
   Widget build(BuildContext context) {
     List<Budget> budgets = context.select<Trip, List<Budget>>((t) => t.budgets);
     return SingleChildScrollView(
+      padding: EdgeInsets.all(5),
       child: Column(
         children: [
           Text("Budgets", textScaler: TextScaler.linear(2)),
           GridView.count(
+            mainAxisSpacing: 5,
+            crossAxisSpacing: 5,
             shrinkWrap: true,
             crossAxisCount: 2,
+            clipBehavior: Clip.none,
             children: List<Widget>.from(
               budgets.map(
                 (b) => ChangeNotifierProvider.value(
@@ -72,7 +76,6 @@ class BudgetInfoWidget extends StatelessWidget {
     final bool isOverBudget = budget.totalExpenses >= budget.amount;
     return Material(
       child: Ink(
-        // margin: EdgeInsets.all(5),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
