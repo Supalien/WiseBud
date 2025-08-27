@@ -1,28 +1,27 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/user.dart';
 import 'package:wisebud/utils.dart';
 
-class Trip extends ChangeNotifier {
+class Trip{
   String name;
   DateTime? createdAt;
-  late List<String> destinations;
-  late DateTime startDate;
-  late DateTime endDate;
-  late String defaultCurrency;
+  List<String> destinations;
+  DateTime startDate;
+  DateTime endDate;
+  String defaultCurrency;
 
   User? user;
 
-  late List<Budget> budgets;
-  late List<Expense> expenses;
+  List<Budget> budgets;
+  List<Expense> expenses;
 
   String? id;
   String? userId;
 
-  late int lengthDays;
+  int get lengthDays => endDate.difference(startDate).inDays;
 
   Trip({
     required this.name,
@@ -36,13 +35,12 @@ class Trip extends ChangeNotifier {
     List<Expense>? expenses,
     this.id,
     this.userId,
-  }) {
-    this.destinations = destinations ?? [];
-    this.budgets = budgets ?? [];
-    this.expenses = expenses ?? [];
-    this.startDate = startDate ?? DateTime.now();
-    this.endDate = endDate ?? DateTime.now().add(Duration(days: 30));
-    lengthDays = this.endDate.difference(this.startDate).inDays;
+  }) : destinations = destinations ?? [],
+       budgets = budgets ?? [],
+       expenses = expenses ?? [],
+       startDate = startDate ?? DateTime.now(),
+       endDate = endDate ?? DateTime.now().add(Duration(days: 30)) 
+       {
     for (Budget b in this.budgets) {
       b.trip = this;
       this.expenses.addAll(b.expenses);
@@ -113,17 +111,8 @@ class Trip extends ChangeNotifier {
     if (id != null) 'id': id,
     if (userId != null) 'userId': userId,
   };
-
-  void addBudget(Budget b) {
-    budgets.add(b);
-    notifyListeners();
-  }
-
-  void addExpense(Expense ex) {
-    expenses.add(ex);
-    notifyListeners();
-  }
 }
+
 
 /**
 final response = await supabase

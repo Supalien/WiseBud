@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/trip.dart';
+import 'package:wisebud/models/trips_provider.dart';
 import 'package:wisebud/pages/new_budget.dart';
 import 'package:wisebud/utils.dart';
 
@@ -30,7 +31,7 @@ class _BudgetTabState extends State<BudgetTab> {
             clipBehavior: Clip.none,
             children: List<Widget>.from(
               budgets.map(
-                (b) => ChangeNotifierProvider.value(
+                (b) => Provider.value(
                   value: b,
                   child: BudgetInfoWidget(),
                 ),
@@ -62,8 +63,7 @@ class _BudgetTabState extends State<BudgetTab> {
       amount: result.amount,
       desc: result.desc,
     );
-    context.read<Trip>().addBudget(nb);
-    setState(() {});
+    context.read<TripsProvider>().addBudget(nb);
   }
 }
 

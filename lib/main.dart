@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
+import 'package:wisebud/models/trips_provider.dart';
 import 'package:wisebud/pages/budget_tab.dart';
 import 'package:wisebud/pages/new_expense.dart';
 // import 'package:wisebud/pages/login_page.dart';
@@ -16,9 +17,19 @@ Future<void> main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxb3hnbGF2YmpvYWlnZWludXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMTMyNzIsImV4cCI6MjA3MDY4OTI3Mn0.seNKHhjAj9uaqEeDhbc5cA2AhmwDRUl1jvqVfOuezAQ',
   );
+  TripsProvider tripsProvider = TripsProvider.from([
+    fakeTrip,
+    fakeTrip2,
+  ]); // FIXME: only for testing
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => getCurrentTrip(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: tripsProvider,),
+        ProxyProvider<TripsProvider, Trip?>(
+          create: (context) => tripsProvider.trip,
+          update: (context, tripsProvider, previousTrip) => tripsProvider.trip,
+        ),
+      ],
       child: MyApp(),
     ),
   );
@@ -104,7 +115,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 54, 170, 190),
-          primary: Color.fromARGB(255, 54, 170, 190)
+          primary: Color.fromARGB(255, 54, 170, 190),
         ),
       ),
       darkTheme: ThemeData(
@@ -112,10 +123,10 @@ class MyApp extends StatelessWidget {
           seedColor: Color.fromARGB(202, 56, 2, 94),
           brightness: Brightness.dark,
           primary: Color.fromARGB(255, 126, 36, 190),
-          dynamicSchemeVariant: DynamicSchemeVariant.rainbow
-        )
+          dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
+        ),
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.dark, //FIXME: delete this line
       home: DefaultTabController(length: 3, child: MyHomePage()),
     );
   }
@@ -144,21 +155,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // FOR TESTING:
     // Trip trip = fakeTrip; // CHANGE LATER
-    print(Theme.of(context).colorScheme.primary);
+    // print(Theme.of(context).colorScheme.primary);
+
+    TripsProvider tripsProvider = context.watch<TripsProvider>();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(context.select<Trip, String>((t) => t.name)),
-      ),
-      body: TabBarView(
-        children: [
-          TripTab(),
-          BudgetTab(),
-          Text('Auth tab'),
+        actions: [
+          ElevatedButton(
+            child: const Text('test button'),
+            onPressed: () {
+              // context.read<TripsProvider>().addExpense(Expense(amount: 50, budget: context.read<Trip>().budgets[0]));
+              context.read<TripsProvider>().select(Trip(name: 'lol'));
+              context.read<TripsProvider>().addExpense(Expense(amount: 100));
+            },
+          )
         ],
       ),
+      body: TabBarView(children: [TripTab(), BudgetTab(), Text('Auth tab')]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _newExpense(context),
         tooltip: 'Increment',
@@ -182,22 +200,35 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   children: [
                     Padding(padding: EdgeInsetsGeometry.all(5)),
-                    Expanded(child: Text("Trips", textScaler: TextScaler.linear(1.5))),
-                    TextButton.icon(onPressed: (){}, label: Text("New Trip"), icon: Icon(Icons.add_circle_sharp),)
+                    Expanded(
+                      child: Text("Trips", textScaler: TextScaler.linear(1.5)),
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        tripsProvider.addTrip(Trip(name: "test trip"));
+                      },
+                      label: Text("New Trip"),
+                      icon: Icon(Icons.add_circle_sharp),
+                    ),
                   ],
                 ),
               ),
             ),
             Expanded(
               child: ListView(
-                children: [
-                  Text("Trip 1"),
-                  Text("Trip 2"),
-                  Text("Trip 3"),
-                  Text("Trip 4"),
-                ],
+                children: List<Widget>.from(
+                  tripsProvider.trips.map(
+                    (t) => TextButton(
+                      onPressed: () {
+                        tripsProvider.select(t);
+                        Navigator.pop(context); // close drawer
+                      },
+                      child: Text("Name: ${t.name}"),
+                    ),
+                  ),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -206,21 +237,25 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 Future<void> _newExpense(BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => NewExpenseScreen()),
-    );
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NewExpenseScreen()),
+  );
 
-    if (!context.mounted) return; // widget doesnt exist
-    if (result == null) return; // result of back button
+  if (!context.mounted) return; // widget doesnt exist
+  if (result == null) return; // result of back button
 
-    Expense expense = Expense(amount: result.amount, desc: result.desc, currency: result.currency, time: result.time);
-    if (result.budget is Budget){
-      (result.budget as Budget).addExpense(expense);
-    }
-    context.read<Trip>().addExpense(expense);
-
+  Expense expense = Expense(
+    amount: result.amount,
+    desc: result.desc,
+    currency: result.currency,
+    time: result.time,
+  );
+  if (result.budget is Budget) {
+    (result.budget as Budget).addExpense(expense);
   }
+  context.read<TripsProvider>().addExpense(expense);
+}
 
 extension ContextExtension on BuildContext {
   void showSnackBar(String message, {bool isError = false}) {
