@@ -12,11 +12,6 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(
-    url: 'https://uqoxglavbjoaigeinuym.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxb3hnbGF2YmpvYWlnZWludXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMTMyNzIsImV4cCI6MjA3MDY4OTI3Mn0.seNKHhjAj9uaqEeDhbc5cA2AhmwDRUl1jvqVfOuezAQ',
-  );
   TripsProvider tripsProvider = TripsProvider.from([
     fakeTrip,
     fakeTrip2,
