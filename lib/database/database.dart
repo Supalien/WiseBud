@@ -5,7 +5,7 @@ import 'dart:convert';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Expenses])
+@DriftDatabase(tables: [ExpenseItems, BudgetItems, TripItems])
 class AppDatabase extends _$AppDatabase {
     AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
     static QueryExecutor _openConnection() {
@@ -34,7 +34,7 @@ class AppDatabase extends _$AppDatabase {
 }
 
 
-class Expenses extends Table {
+class ExpenseItems extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDate)();
   
@@ -43,11 +43,11 @@ class Expenses extends Table {
   DateTimeColumn get time => dateTime()();
   TextColumn get currency => text()();
 
-  IntColumn get trip => integer().nullable().references(Trips, #id)();
-  IntColumn get budget => integer().nullable().references(Budgets, #id)();
+  IntColumn get tripId => integer().nullable().references(TripItems, #id)();
+  IntColumn get budgetId => integer().nullable().references(BudgetItems, #id)();
 }
 
-class Budgets extends Table {
+class BudgetItems extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDate)();
   
@@ -56,10 +56,10 @@ class Budgets extends Table {
   IntColumn get amount => integer()();
   IntColumn get periodDays => integer()();
 
-  IntColumn get trip => integer().nullable().references(Trips, #id)();
+  IntColumn get trip => integer().nullable().references(TripItems, #id)();
 }
 
-class Trips extends Table {
+class TripItems extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDate)();
   

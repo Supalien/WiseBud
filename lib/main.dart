@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:wisebud/database/database.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   TripsProvider tripsProvider = TripsProvider.from([
     fakeTrip,
     fakeTrip2,
@@ -19,10 +21,14 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: tripsProvider,),
+        ChangeNotifierProvider.value(value: tripsProvider),
         ProxyProvider<TripsProvider, Trip?>(
           create: (context) => tripsProvider.trip,
           update: (context, tripsProvider, previousTrip) => tripsProvider.trip,
+        ),
+        Provider<AppDatabase>(
+          create: (context) => AppDatabase(),
+          dispose: (context, db) => db.close(),
         ),
       ],
       child: MyApp(),
@@ -168,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
               context.read<TripsProvider>().select(Trip(name: 'lol'));
               context.read<TripsProvider>().addExpense(Expense(amount: 100));
             },
-          )
+          ),
         ],
       ),
       body: TabBarView(children: [TripTab(), BudgetTab(), Text('Auth tab')]),

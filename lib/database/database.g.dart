@@ -3,11 +3,12 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
+class $TripItemsTable extends TripItems
+    with TableInfo<$TripItemsTable, TripItem> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TripsTable(this.attachedDatabase, [this._alias]);
+  $TripItemsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -50,7 +51,7 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
-  ).withConverter<List<String>>($TripsTable.$converterdestinations);
+  ).withConverter<List<String>>($TripItemsTable.$converterdestinations);
   static const VerificationMeta _startDateMeta = const VerificationMeta(
     'startDate',
   );
@@ -98,10 +99,10 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'trips';
+  static const String $name = 'trip_items';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Trip> instance, {
+    Insertable<TripItem> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -156,9 +157,9 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Trip map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TripItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Trip(
+    return TripItem(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -171,7 +172,7 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      destinations: $TripsTable.$converterdestinations.fromSql(
+      destinations: $TripItemsTable.$converterdestinations.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}destinations'],
@@ -193,15 +194,15 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
   }
 
   @override
-  $TripsTable createAlias(String alias) {
-    return $TripsTable(attachedDatabase, alias);
+  $TripItemsTable createAlias(String alias) {
+    return $TripItemsTable(attachedDatabase, alias);
   }
 
   static TypeConverter<List<String>, String> $converterdestinations =
       StringListTypeConverter();
 }
 
-class Trip extends DataClass implements Insertable<Trip> {
+class TripItem extends DataClass implements Insertable<TripItem> {
   final int id;
   final DateTime createdAt;
   final String name;
@@ -209,7 +210,7 @@ class Trip extends DataClass implements Insertable<Trip> {
   final DateTime startDate;
   final DateTime endDate;
   final String defaultCurrency;
-  const Trip({
+  const TripItem({
     required this.id,
     required this.createdAt,
     required this.name,
@@ -226,7 +227,7 @@ class Trip extends DataClass implements Insertable<Trip> {
     map['name'] = Variable<String>(name);
     {
       map['destinations'] = Variable<String>(
-        $TripsTable.$converterdestinations.toSql(destinations),
+        $TripItemsTable.$converterdestinations.toSql(destinations),
       );
     }
     map['start_date'] = Variable<DateTime>(startDate);
@@ -235,8 +236,8 @@ class Trip extends DataClass implements Insertable<Trip> {
     return map;
   }
 
-  TripsCompanion toCompanion(bool nullToAbsent) {
-    return TripsCompanion(
+  TripItemsCompanion toCompanion(bool nullToAbsent) {
+    return TripItemsCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
       name: Value(name),
@@ -247,12 +248,12 @@ class Trip extends DataClass implements Insertable<Trip> {
     );
   }
 
-  factory Trip.fromJson(
+  factory TripItem.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Trip(
+    return TripItem(
       id: serializer.fromJson<int>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       name: serializer.fromJson<String>(json['name']),
@@ -276,7 +277,7 @@ class Trip extends DataClass implements Insertable<Trip> {
     };
   }
 
-  Trip copyWith({
+  TripItem copyWith({
     int? id,
     DateTime? createdAt,
     String? name,
@@ -284,7 +285,7 @@ class Trip extends DataClass implements Insertable<Trip> {
     DateTime? startDate,
     DateTime? endDate,
     String? defaultCurrency,
-  }) => Trip(
+  }) => TripItem(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
     name: name ?? this.name,
@@ -293,8 +294,8 @@ class Trip extends DataClass implements Insertable<Trip> {
     endDate: endDate ?? this.endDate,
     defaultCurrency: defaultCurrency ?? this.defaultCurrency,
   );
-  Trip copyWithCompanion(TripsCompanion data) {
-    return Trip(
+  TripItem copyWithCompanion(TripItemsCompanion data) {
+    return TripItem(
       id: data.id.present ? data.id.value : this.id,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       name: data.name.present ? data.name.value : this.name,
@@ -311,7 +312,7 @@ class Trip extends DataClass implements Insertable<Trip> {
 
   @override
   String toString() {
-    return (StringBuffer('Trip(')
+    return (StringBuffer('TripItem(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
@@ -336,7 +337,7 @@ class Trip extends DataClass implements Insertable<Trip> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Trip &&
+      (other is TripItem &&
           other.id == this.id &&
           other.createdAt == this.createdAt &&
           other.name == this.name &&
@@ -346,7 +347,7 @@ class Trip extends DataClass implements Insertable<Trip> {
           other.defaultCurrency == this.defaultCurrency);
 }
 
-class TripsCompanion extends UpdateCompanion<Trip> {
+class TripItemsCompanion extends UpdateCompanion<TripItem> {
   final Value<int> id;
   final Value<DateTime> createdAt;
   final Value<String> name;
@@ -354,7 +355,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
   final Value<DateTime> startDate;
   final Value<DateTime> endDate;
   final Value<String> defaultCurrency;
-  const TripsCompanion({
+  const TripItemsCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.name = const Value.absent(),
@@ -363,7 +364,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     this.endDate = const Value.absent(),
     this.defaultCurrency = const Value.absent(),
   });
-  TripsCompanion.insert({
+  TripItemsCompanion.insert({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     required String name,
@@ -376,7 +377,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
        startDate = Value(startDate),
        endDate = Value(endDate),
        defaultCurrency = Value(defaultCurrency);
-  static Insertable<Trip> custom({
+  static Insertable<TripItem> custom({
     Expression<int>? id,
     Expression<DateTime>? createdAt,
     Expression<String>? name,
@@ -396,7 +397,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     });
   }
 
-  TripsCompanion copyWith({
+  TripItemsCompanion copyWith({
     Value<int>? id,
     Value<DateTime>? createdAt,
     Value<String>? name,
@@ -405,7 +406,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     Value<DateTime>? endDate,
     Value<String>? defaultCurrency,
   }) {
-    return TripsCompanion(
+    return TripItemsCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
@@ -430,7 +431,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     }
     if (destinations.present) {
       map['destinations'] = Variable<String>(
-        $TripsTable.$converterdestinations.toSql(destinations.value),
+        $TripItemsTable.$converterdestinations.toSql(destinations.value),
       );
     }
     if (startDate.present) {
@@ -447,7 +448,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
 
   @override
   String toString() {
-    return (StringBuffer('TripsCompanion(')
+    return (StringBuffer('TripItemsCompanion(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
@@ -460,11 +461,12 @@ class TripsCompanion extends UpdateCompanion<Trip> {
   }
 }
 
-class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
+class $BudgetItemsTable extends BudgetItems
+    with TableInfo<$BudgetItemsTable, BudgetItem> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BudgetsTable(this.attachedDatabase, [this._alias]);
+  $BudgetItemsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -537,7 +539,7 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES trips (id)',
+      'REFERENCES trip_items (id)',
     ),
   );
   @override
@@ -554,10 +556,10 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'budgets';
+  static const String $name = 'budget_items';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Budget> instance, {
+    Insertable<BudgetItem> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -613,9 +615,9 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Budget map(Map<String, dynamic> data, {String? tablePrefix}) {
+  BudgetItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Budget(
+    return BudgetItem(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -648,12 +650,12 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
   }
 
   @override
-  $BudgetsTable createAlias(String alias) {
-    return $BudgetsTable(attachedDatabase, alias);
+  $BudgetItemsTable createAlias(String alias) {
+    return $BudgetItemsTable(attachedDatabase, alias);
   }
 }
 
-class Budget extends DataClass implements Insertable<Budget> {
+class BudgetItem extends DataClass implements Insertable<BudgetItem> {
   final int id;
   final DateTime createdAt;
   final String name;
@@ -661,7 +663,7 @@ class Budget extends DataClass implements Insertable<Budget> {
   final int amount;
   final int periodDays;
   final int? trip;
-  const Budget({
+  const BudgetItem({
     required this.id,
     required this.createdAt,
     required this.name,
@@ -687,8 +689,8 @@ class Budget extends DataClass implements Insertable<Budget> {
     return map;
   }
 
-  BudgetsCompanion toCompanion(bool nullToAbsent) {
-    return BudgetsCompanion(
+  BudgetItemsCompanion toCompanion(bool nullToAbsent) {
+    return BudgetItemsCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
       name: Value(name),
@@ -699,12 +701,12 @@ class Budget extends DataClass implements Insertable<Budget> {
     );
   }
 
-  factory Budget.fromJson(
+  factory BudgetItem.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Budget(
+    return BudgetItem(
       id: serializer.fromJson<int>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       name: serializer.fromJson<String>(json['name']),
@@ -728,7 +730,7 @@ class Budget extends DataClass implements Insertable<Budget> {
     };
   }
 
-  Budget copyWith({
+  BudgetItem copyWith({
     int? id,
     DateTime? createdAt,
     String? name,
@@ -736,7 +738,7 @@ class Budget extends DataClass implements Insertable<Budget> {
     int? amount,
     int? periodDays,
     Value<int?> trip = const Value.absent(),
-  }) => Budget(
+  }) => BudgetItem(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
     name: name ?? this.name,
@@ -745,8 +747,8 @@ class Budget extends DataClass implements Insertable<Budget> {
     periodDays: periodDays ?? this.periodDays,
     trip: trip.present ? trip.value : this.trip,
   );
-  Budget copyWithCompanion(BudgetsCompanion data) {
-    return Budget(
+  BudgetItem copyWithCompanion(BudgetItemsCompanion data) {
+    return BudgetItem(
       id: data.id.present ? data.id.value : this.id,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       name: data.name.present ? data.name.value : this.name,
@@ -761,7 +763,7 @@ class Budget extends DataClass implements Insertable<Budget> {
 
   @override
   String toString() {
-    return (StringBuffer('Budget(')
+    return (StringBuffer('BudgetItem(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
@@ -779,7 +781,7 @@ class Budget extends DataClass implements Insertable<Budget> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Budget &&
+      (other is BudgetItem &&
           other.id == this.id &&
           other.createdAt == this.createdAt &&
           other.name == this.name &&
@@ -789,7 +791,7 @@ class Budget extends DataClass implements Insertable<Budget> {
           other.trip == this.trip);
 }
 
-class BudgetsCompanion extends UpdateCompanion<Budget> {
+class BudgetItemsCompanion extends UpdateCompanion<BudgetItem> {
   final Value<int> id;
   final Value<DateTime> createdAt;
   final Value<String> name;
@@ -797,7 +799,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
   final Value<int> amount;
   final Value<int> periodDays;
   final Value<int?> trip;
-  const BudgetsCompanion({
+  const BudgetItemsCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.name = const Value.absent(),
@@ -806,7 +808,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     this.periodDays = const Value.absent(),
     this.trip = const Value.absent(),
   });
-  BudgetsCompanion.insert({
+  BudgetItemsCompanion.insert({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     required String name,
@@ -817,7 +819,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
   }) : name = Value(name),
        amount = Value(amount),
        periodDays = Value(periodDays);
-  static Insertable<Budget> custom({
+  static Insertable<BudgetItem> custom({
     Expression<int>? id,
     Expression<DateTime>? createdAt,
     Expression<String>? name,
@@ -837,7 +839,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     });
   }
 
-  BudgetsCompanion copyWith({
+  BudgetItemsCompanion copyWith({
     Value<int>? id,
     Value<DateTime>? createdAt,
     Value<String>? name,
@@ -846,7 +848,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
     Value<int>? periodDays,
     Value<int?>? trip,
   }) {
-    return BudgetsCompanion(
+    return BudgetItemsCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
@@ -886,7 +888,7 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
 
   @override
   String toString() {
-    return (StringBuffer('BudgetsCompanion(')
+    return (StringBuffer('BudgetItemsCompanion(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
@@ -899,11 +901,12 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
   }
 }
 
-class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
+class $ExpenseItemsTable extends ExpenseItems
+    with TableInfo<$ExpenseItemsTable, ExpenseItem> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ExpensesTable(this.attachedDatabase, [this._alias]);
+  $ExpenseItemsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -967,28 +970,30 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _tripMeta = const VerificationMeta('trip');
+  static const VerificationMeta _tripIdMeta = const VerificationMeta('tripId');
   @override
-  late final GeneratedColumn<int> trip = GeneratedColumn<int>(
-    'trip',
+  late final GeneratedColumn<int> tripId = GeneratedColumn<int>(
+    'trip_id',
     aliasedName,
     true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES trips (id)',
+      'REFERENCES trip_items (id)',
     ),
   );
-  static const VerificationMeta _budgetMeta = const VerificationMeta('budget');
+  static const VerificationMeta _budgetIdMeta = const VerificationMeta(
+    'budgetId',
+  );
   @override
-  late final GeneratedColumn<int> budget = GeneratedColumn<int>(
-    'budget',
+  late final GeneratedColumn<int> budgetId = GeneratedColumn<int>(
+    'budget_id',
     aliasedName,
     true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES budgets (id)',
+      'REFERENCES budget_items (id)',
     ),
   );
   @override
@@ -999,17 +1004,17 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     desc,
     time,
     currency,
-    trip,
-    budget,
+    tripId,
+    budgetId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'expenses';
+  static const String $name = 'expense_items';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Expense> instance, {
+    Insertable<ExpenseItem> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1055,16 +1060,16 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     } else if (isInserting) {
       context.missing(_currencyMeta);
     }
-    if (data.containsKey('trip')) {
+    if (data.containsKey('trip_id')) {
       context.handle(
-        _tripMeta,
-        trip.isAcceptableOrUnknown(data['trip']!, _tripMeta),
+        _tripIdMeta,
+        tripId.isAcceptableOrUnknown(data['trip_id']!, _tripIdMeta),
       );
     }
-    if (data.containsKey('budget')) {
+    if (data.containsKey('budget_id')) {
       context.handle(
-        _budgetMeta,
-        budget.isAcceptableOrUnknown(data['budget']!, _budgetMeta),
+        _budgetIdMeta,
+        budgetId.isAcceptableOrUnknown(data['budget_id']!, _budgetIdMeta),
       );
     }
     return context;
@@ -1073,9 +1078,9 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Expense map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ExpenseItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Expense(
+    return ExpenseItem(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -1100,41 +1105,41 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
         DriftSqlType.string,
         data['${effectivePrefix}currency'],
       )!,
-      trip: attachedDatabase.typeMapping.read(
+      tripId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}trip'],
+        data['${effectivePrefix}trip_id'],
       ),
-      budget: attachedDatabase.typeMapping.read(
+      budgetId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}budget'],
+        data['${effectivePrefix}budget_id'],
       ),
     );
   }
 
   @override
-  $ExpensesTable createAlias(String alias) {
-    return $ExpensesTable(attachedDatabase, alias);
+  $ExpenseItemsTable createAlias(String alias) {
+    return $ExpenseItemsTable(attachedDatabase, alias);
   }
 }
 
-class Expense extends DataClass implements Insertable<Expense> {
+class ExpenseItem extends DataClass implements Insertable<ExpenseItem> {
   final int id;
   final DateTime createdAt;
   final double amount;
   final String desc;
   final DateTime time;
   final String currency;
-  final int? trip;
-  final int? budget;
-  const Expense({
+  final int? tripId;
+  final int? budgetId;
+  const ExpenseItem({
     required this.id,
     required this.createdAt,
     required this.amount,
     required this.desc,
     required this.time,
     required this.currency,
-    this.trip,
-    this.budget,
+    this.tripId,
+    this.budgetId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1145,44 +1150,46 @@ class Expense extends DataClass implements Insertable<Expense> {
     map['desc'] = Variable<String>(desc);
     map['time'] = Variable<DateTime>(time);
     map['currency'] = Variable<String>(currency);
-    if (!nullToAbsent || trip != null) {
-      map['trip'] = Variable<int>(trip);
+    if (!nullToAbsent || tripId != null) {
+      map['trip_id'] = Variable<int>(tripId);
     }
-    if (!nullToAbsent || budget != null) {
-      map['budget'] = Variable<int>(budget);
+    if (!nullToAbsent || budgetId != null) {
+      map['budget_id'] = Variable<int>(budgetId);
     }
     return map;
   }
 
-  ExpensesCompanion toCompanion(bool nullToAbsent) {
-    return ExpensesCompanion(
+  ExpenseItemsCompanion toCompanion(bool nullToAbsent) {
+    return ExpenseItemsCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
       amount: Value(amount),
       desc: Value(desc),
       time: Value(time),
       currency: Value(currency),
-      trip: trip == null && nullToAbsent ? const Value.absent() : Value(trip),
-      budget: budget == null && nullToAbsent
+      tripId: tripId == null && nullToAbsent
           ? const Value.absent()
-          : Value(budget),
+          : Value(tripId),
+      budgetId: budgetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(budgetId),
     );
   }
 
-  factory Expense.fromJson(
+  factory ExpenseItem.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Expense(
+    return ExpenseItem(
       id: serializer.fromJson<int>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       amount: serializer.fromJson<double>(json['amount']),
       desc: serializer.fromJson<String>(json['desc']),
       time: serializer.fromJson<DateTime>(json['time']),
       currency: serializer.fromJson<String>(json['currency']),
-      trip: serializer.fromJson<int?>(json['trip']),
-      budget: serializer.fromJson<int?>(json['budget']),
+      tripId: serializer.fromJson<int?>(json['tripId']),
+      budgetId: serializer.fromJson<int?>(json['budgetId']),
     );
   }
   @override
@@ -1195,116 +1202,124 @@ class Expense extends DataClass implements Insertable<Expense> {
       'desc': serializer.toJson<String>(desc),
       'time': serializer.toJson<DateTime>(time),
       'currency': serializer.toJson<String>(currency),
-      'trip': serializer.toJson<int?>(trip),
-      'budget': serializer.toJson<int?>(budget),
+      'tripId': serializer.toJson<int?>(tripId),
+      'budgetId': serializer.toJson<int?>(budgetId),
     };
   }
 
-  Expense copyWith({
+  ExpenseItem copyWith({
     int? id,
     DateTime? createdAt,
     double? amount,
     String? desc,
     DateTime? time,
     String? currency,
-    Value<int?> trip = const Value.absent(),
-    Value<int?> budget = const Value.absent(),
-  }) => Expense(
+    Value<int?> tripId = const Value.absent(),
+    Value<int?> budgetId = const Value.absent(),
+  }) => ExpenseItem(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
     amount: amount ?? this.amount,
     desc: desc ?? this.desc,
     time: time ?? this.time,
     currency: currency ?? this.currency,
-    trip: trip.present ? trip.value : this.trip,
-    budget: budget.present ? budget.value : this.budget,
+    tripId: tripId.present ? tripId.value : this.tripId,
+    budgetId: budgetId.present ? budgetId.value : this.budgetId,
   );
-  Expense copyWithCompanion(ExpensesCompanion data) {
-    return Expense(
+  ExpenseItem copyWithCompanion(ExpenseItemsCompanion data) {
+    return ExpenseItem(
       id: data.id.present ? data.id.value : this.id,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       amount: data.amount.present ? data.amount.value : this.amount,
       desc: data.desc.present ? data.desc.value : this.desc,
       time: data.time.present ? data.time.value : this.time,
       currency: data.currency.present ? data.currency.value : this.currency,
-      trip: data.trip.present ? data.trip.value : this.trip,
-      budget: data.budget.present ? data.budget.value : this.budget,
+      tripId: data.tripId.present ? data.tripId.value : this.tripId,
+      budgetId: data.budgetId.present ? data.budgetId.value : this.budgetId,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('Expense(')
+    return (StringBuffer('ExpenseItem(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('amount: $amount, ')
           ..write('desc: $desc, ')
           ..write('time: $time, ')
           ..write('currency: $currency, ')
-          ..write('trip: $trip, ')
-          ..write('budget: $budget')
+          ..write('tripId: $tripId, ')
+          ..write('budgetId: $budgetId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, createdAt, amount, desc, time, currency, trip, budget);
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    amount,
+    desc,
+    time,
+    currency,
+    tripId,
+    budgetId,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Expense &&
+      (other is ExpenseItem &&
           other.id == this.id &&
           other.createdAt == this.createdAt &&
           other.amount == this.amount &&
           other.desc == this.desc &&
           other.time == this.time &&
           other.currency == this.currency &&
-          other.trip == this.trip &&
-          other.budget == this.budget);
+          other.tripId == this.tripId &&
+          other.budgetId == this.budgetId);
 }
 
-class ExpensesCompanion extends UpdateCompanion<Expense> {
+class ExpenseItemsCompanion extends UpdateCompanion<ExpenseItem> {
   final Value<int> id;
   final Value<DateTime> createdAt;
   final Value<double> amount;
   final Value<String> desc;
   final Value<DateTime> time;
   final Value<String> currency;
-  final Value<int?> trip;
-  final Value<int?> budget;
-  const ExpensesCompanion({
+  final Value<int?> tripId;
+  final Value<int?> budgetId;
+  const ExpenseItemsCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.amount = const Value.absent(),
     this.desc = const Value.absent(),
     this.time = const Value.absent(),
     this.currency = const Value.absent(),
-    this.trip = const Value.absent(),
-    this.budget = const Value.absent(),
+    this.tripId = const Value.absent(),
+    this.budgetId = const Value.absent(),
   });
-  ExpensesCompanion.insert({
+  ExpenseItemsCompanion.insert({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     required double amount,
     required String desc,
     required DateTime time,
     required String currency,
-    this.trip = const Value.absent(),
-    this.budget = const Value.absent(),
+    this.tripId = const Value.absent(),
+    this.budgetId = const Value.absent(),
   }) : amount = Value(amount),
        desc = Value(desc),
        time = Value(time),
        currency = Value(currency);
-  static Insertable<Expense> custom({
+  static Insertable<ExpenseItem> custom({
     Expression<int>? id,
     Expression<DateTime>? createdAt,
     Expression<double>? amount,
     Expression<String>? desc,
     Expression<DateTime>? time,
     Expression<String>? currency,
-    Expression<int>? trip,
-    Expression<int>? budget,
+    Expression<int>? tripId,
+    Expression<int>? budgetId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1313,30 +1328,30 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
       if (desc != null) 'desc': desc,
       if (time != null) 'time': time,
       if (currency != null) 'currency': currency,
-      if (trip != null) 'trip': trip,
-      if (budget != null) 'budget': budget,
+      if (tripId != null) 'trip_id': tripId,
+      if (budgetId != null) 'budget_id': budgetId,
     });
   }
 
-  ExpensesCompanion copyWith({
+  ExpenseItemsCompanion copyWith({
     Value<int>? id,
     Value<DateTime>? createdAt,
     Value<double>? amount,
     Value<String>? desc,
     Value<DateTime>? time,
     Value<String>? currency,
-    Value<int?>? trip,
-    Value<int?>? budget,
+    Value<int?>? tripId,
+    Value<int?>? budgetId,
   }) {
-    return ExpensesCompanion(
+    return ExpenseItemsCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       amount: amount ?? this.amount,
       desc: desc ?? this.desc,
       time: time ?? this.time,
       currency: currency ?? this.currency,
-      trip: trip ?? this.trip,
-      budget: budget ?? this.budget,
+      tripId: tripId ?? this.tripId,
+      budgetId: budgetId ?? this.budgetId,
     );
   }
 
@@ -1361,26 +1376,26 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     if (currency.present) {
       map['currency'] = Variable<String>(currency.value);
     }
-    if (trip.present) {
-      map['trip'] = Variable<int>(trip.value);
+    if (tripId.present) {
+      map['trip_id'] = Variable<int>(tripId.value);
     }
-    if (budget.present) {
-      map['budget'] = Variable<int>(budget.value);
+    if (budgetId.present) {
+      map['budget_id'] = Variable<int>(budgetId.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('ExpensesCompanion(')
+    return (StringBuffer('ExpenseItemsCompanion(')
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('amount: $amount, ')
           ..write('desc: $desc, ')
           ..write('time: $time, ')
           ..write('currency: $currency, ')
-          ..write('trip: $trip, ')
-          ..write('budget: $budget')
+          ..write('tripId: $tripId, ')
+          ..write('budgetId: $budgetId')
           ..write(')'))
         .toString();
   }
@@ -1389,22 +1404,22 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $TripsTable trips = $TripsTable(this);
-  late final $BudgetsTable budgets = $BudgetsTable(this);
-  late final $ExpensesTable expenses = $ExpensesTable(this);
+  late final $TripItemsTable tripItems = $TripItemsTable(this);
+  late final $BudgetItemsTable budgetItems = $BudgetItemsTable(this);
+  late final $ExpenseItemsTable expenseItems = $ExpenseItemsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-    trips,
-    budgets,
-    expenses,
+    tripItems,
+    budgetItems,
+    expenseItems,
   ];
 }
 
-typedef $$TripsTableCreateCompanionBuilder =
-    TripsCompanion Function({
+typedef $$TripItemsTableCreateCompanionBuilder =
+    TripItemsCompanion Function({
       Value<int> id,
       Value<DateTime> createdAt,
       required String name,
@@ -1413,8 +1428,8 @@ typedef $$TripsTableCreateCompanionBuilder =
       required DateTime endDate,
       required String defaultCurrency,
     });
-typedef $$TripsTableUpdateCompanionBuilder =
-    TripsCompanion Function({
+typedef $$TripItemsTableUpdateCompanionBuilder =
+    TripItemsCompanion Function({
       Value<int> id,
       Value<DateTime> createdAt,
       Value<String> name,
@@ -1424,51 +1439,50 @@ typedef $$TripsTableUpdateCompanionBuilder =
       Value<String> defaultCurrency,
     });
 
-final class $$TripsTableReferences
-    extends BaseReferences<_$AppDatabase, $TripsTable, Trip> {
-  $$TripsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$TripItemsTableReferences
+    extends BaseReferences<_$AppDatabase, $TripItemsTable, TripItem> {
+  $$TripItemsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$BudgetsTable, List<Budget>> _budgetsRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.budgets,
-    aliasName: $_aliasNameGenerator(db.trips.id, db.budgets.trip),
+  static MultiTypedResultKey<$BudgetItemsTable, List<BudgetItem>>
+  _budgetItemsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.budgetItems,
+    aliasName: $_aliasNameGenerator(db.tripItems.id, db.budgetItems.trip),
   );
 
-  $$BudgetsTableProcessedTableManager get budgetsRefs {
-    final manager = $$BudgetsTableTableManager(
+  $$BudgetItemsTableProcessedTableManager get budgetItemsRefs {
+    final manager = $$BudgetItemsTableTableManager(
       $_db,
-      $_db.budgets,
+      $_db.budgetItems,
     ).filter((f) => f.trip.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_budgetsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_budgetItemsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
 
-  static MultiTypedResultKey<$ExpensesTable, List<Expense>> _expensesRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.expenses,
-    aliasName: $_aliasNameGenerator(db.trips.id, db.expenses.trip),
+  static MultiTypedResultKey<$ExpenseItemsTable, List<ExpenseItem>>
+  _expenseItemsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.expenseItems,
+    aliasName: $_aliasNameGenerator(db.tripItems.id, db.expenseItems.tripId),
   );
 
-  $$ExpensesTableProcessedTableManager get expensesRefs {
-    final manager = $$ExpensesTableTableManager(
+  $$ExpenseItemsTableProcessedTableManager get expenseItemsRefs {
+    final manager = $$ExpenseItemsTableTableManager(
       $_db,
-      $_db.expenses,
-    ).filter((f) => f.trip.id.sqlEquals($_itemColumn<int>('id')!));
+      $_db.expenseItems,
+    ).filter((f) => f.tripId.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_expensesRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_expenseItemsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
 }
 
-class $$TripsTableFilterComposer extends Composer<_$AppDatabase, $TripsTable> {
-  $$TripsTableFilterComposer({
+class $$TripItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $TripItemsTable> {
+  $$TripItemsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1511,22 +1525,22 @@ class $$TripsTableFilterComposer extends Composer<_$AppDatabase, $TripsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> budgetsRefs(
-    Expression<bool> Function($$BudgetsTableFilterComposer f) f,
+  Expression<bool> budgetItemsRefs(
+    Expression<bool> Function($$BudgetItemsTableFilterComposer f) f,
   ) {
-    final $$BudgetsTableFilterComposer composer = $composerBuilder(
+    final $$BudgetItemsTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.budgets,
+      referencedTable: $db.budgetItems,
       getReferencedColumn: (t) => t.trip,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$BudgetsTableFilterComposer(
+          }) => $$BudgetItemsTableFilterComposer(
             $db: $db,
-            $table: $db.budgets,
+            $table: $db.budgetItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1536,22 +1550,22 @@ class $$TripsTableFilterComposer extends Composer<_$AppDatabase, $TripsTable> {
     return f(composer);
   }
 
-  Expression<bool> expensesRefs(
-    Expression<bool> Function($$ExpensesTableFilterComposer f) f,
+  Expression<bool> expenseItemsRefs(
+    Expression<bool> Function($$ExpenseItemsTableFilterComposer f) f,
   ) {
-    final $$ExpensesTableFilterComposer composer = $composerBuilder(
+    final $$ExpenseItemsTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.expenses,
-      getReferencedColumn: (t) => t.trip,
+      referencedTable: $db.expenseItems,
+      getReferencedColumn: (t) => t.tripId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$ExpensesTableFilterComposer(
+          }) => $$ExpenseItemsTableFilterComposer(
             $db: $db,
-            $table: $db.expenses,
+            $table: $db.expenseItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1562,9 +1576,9 @@ class $$TripsTableFilterComposer extends Composer<_$AppDatabase, $TripsTable> {
   }
 }
 
-class $$TripsTableOrderingComposer
-    extends Composer<_$AppDatabase, $TripsTable> {
-  $$TripsTableOrderingComposer({
+class $$TripItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TripItemsTable> {
+  $$TripItemsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1607,9 +1621,9 @@ class $$TripsTableOrderingComposer
   );
 }
 
-class $$TripsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $TripsTable> {
-  $$TripsTableAnnotationComposer({
+class $$TripItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TripItemsTable> {
+  $$TripItemsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1642,22 +1656,22 @@ class $$TripsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  Expression<T> budgetsRefs<T extends Object>(
-    Expression<T> Function($$BudgetsTableAnnotationComposer a) f,
+  Expression<T> budgetItemsRefs<T extends Object>(
+    Expression<T> Function($$BudgetItemsTableAnnotationComposer a) f,
   ) {
-    final $$BudgetsTableAnnotationComposer composer = $composerBuilder(
+    final $$BudgetItemsTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.budgets,
+      referencedTable: $db.budgetItems,
       getReferencedColumn: (t) => t.trip,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$BudgetsTableAnnotationComposer(
+          }) => $$BudgetItemsTableAnnotationComposer(
             $db: $db,
-            $table: $db.budgets,
+            $table: $db.budgetItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1667,22 +1681,22 @@ class $$TripsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> expensesRefs<T extends Object>(
-    Expression<T> Function($$ExpensesTableAnnotationComposer a) f,
+  Expression<T> expenseItemsRefs<T extends Object>(
+    Expression<T> Function($$ExpenseItemsTableAnnotationComposer a) f,
   ) {
-    final $$ExpensesTableAnnotationComposer composer = $composerBuilder(
+    final $$ExpenseItemsTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.expenses,
-      getReferencedColumn: (t) => t.trip,
+      referencedTable: $db.expenseItems,
+      getReferencedColumn: (t) => t.tripId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$ExpensesTableAnnotationComposer(
+          }) => $$ExpenseItemsTableAnnotationComposer(
             $db: $db,
-            $table: $db.expenses,
+            $table: $db.expenseItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1693,32 +1707,32 @@ class $$TripsTableAnnotationComposer
   }
 }
 
-class $$TripsTableTableManager
+class $$TripItemsTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $TripsTable,
-          Trip,
-          $$TripsTableFilterComposer,
-          $$TripsTableOrderingComposer,
-          $$TripsTableAnnotationComposer,
-          $$TripsTableCreateCompanionBuilder,
-          $$TripsTableUpdateCompanionBuilder,
-          (Trip, $$TripsTableReferences),
-          Trip,
-          PrefetchHooks Function({bool budgetsRefs, bool expensesRefs})
+          $TripItemsTable,
+          TripItem,
+          $$TripItemsTableFilterComposer,
+          $$TripItemsTableOrderingComposer,
+          $$TripItemsTableAnnotationComposer,
+          $$TripItemsTableCreateCompanionBuilder,
+          $$TripItemsTableUpdateCompanionBuilder,
+          (TripItem, $$TripItemsTableReferences),
+          TripItem,
+          PrefetchHooks Function({bool budgetItemsRefs, bool expenseItemsRefs})
         > {
-  $$TripsTableTableManager(_$AppDatabase db, $TripsTable table)
+  $$TripItemsTableTableManager(_$AppDatabase db, $TripItemsTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$TripsTableFilterComposer($db: db, $table: table),
+              $$TripItemsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$TripsTableOrderingComposer($db: db, $table: table),
+              $$TripItemsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$TripsTableAnnotationComposer($db: db, $table: table),
+              $$TripItemsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -1728,7 +1742,7 @@ class $$TripsTableTableManager
                 Value<DateTime> startDate = const Value.absent(),
                 Value<DateTime> endDate = const Value.absent(),
                 Value<String> defaultCurrency = const Value.absent(),
-              }) => TripsCompanion(
+              }) => TripItemsCompanion(
                 id: id,
                 createdAt: createdAt,
                 name: name,
@@ -1746,7 +1760,7 @@ class $$TripsTableTableManager
                 required DateTime startDate,
                 required DateTime endDate,
                 required String defaultCurrency,
-              }) => TripsCompanion.insert(
+              }) => TripItemsCompanion.insert(
                 id: id,
                 createdAt: createdAt,
                 name: name,
@@ -1757,67 +1771,89 @@ class $$TripsTableTableManager
               ),
           withReferenceMapper: (p0) => p0
               .map(
-                (e) =>
-                    (e.readTable(table), $$TripsTableReferences(db, table, e)),
+                (e) => (
+                  e.readTable(table),
+                  $$TripItemsTableReferences(db, table, e),
+                ),
               )
               .toList(),
-          prefetchHooksCallback: ({budgetsRefs = false, expensesRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (budgetsRefs) db.budgets,
-                if (expensesRefs) db.expenses,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (budgetsRefs)
-                    await $_getPrefetchedData<Trip, $TripsTable, Budget>(
-                      currentTable: table,
-                      referencedTable: $$TripsTableReferences._budgetsRefsTable(
-                        db,
-                      ),
-                      managerFromTypedResult: (p0) =>
-                          $$TripsTableReferences(db, table, p0).budgetsRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.trip == item.id),
-                      typedResults: items,
-                    ),
-                  if (expensesRefs)
-                    await $_getPrefetchedData<Trip, $TripsTable, Expense>(
-                      currentTable: table,
-                      referencedTable: $$TripsTableReferences
-                          ._expensesRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$TripsTableReferences(db, table, p0).expensesRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.trip == item.id),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({budgetItemsRefs = false, expenseItemsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (budgetItemsRefs) db.budgetItems,
+                    if (expenseItemsRefs) db.expenseItems,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (budgetItemsRefs)
+                        await $_getPrefetchedData<
+                          TripItem,
+                          $TripItemsTable,
+                          BudgetItem
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TripItemsTableReferences
+                              ._budgetItemsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TripItemsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).budgetItemsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.trip == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (expenseItemsRefs)
+                        await $_getPrefetchedData<
+                          TripItem,
+                          $TripItemsTable,
+                          ExpenseItem
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TripItemsTableReferences
+                              ._expenseItemsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TripItemsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).expenseItemsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.tripId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
 
-typedef $$TripsTableProcessedTableManager =
+typedef $$TripItemsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $TripsTable,
-      Trip,
-      $$TripsTableFilterComposer,
-      $$TripsTableOrderingComposer,
-      $$TripsTableAnnotationComposer,
-      $$TripsTableCreateCompanionBuilder,
-      $$TripsTableUpdateCompanionBuilder,
-      (Trip, $$TripsTableReferences),
-      Trip,
-      PrefetchHooks Function({bool budgetsRefs, bool expensesRefs})
+      $TripItemsTable,
+      TripItem,
+      $$TripItemsTableFilterComposer,
+      $$TripItemsTableOrderingComposer,
+      $$TripItemsTableAnnotationComposer,
+      $$TripItemsTableCreateCompanionBuilder,
+      $$TripItemsTableUpdateCompanionBuilder,
+      (TripItem, $$TripItemsTableReferences),
+      TripItem,
+      PrefetchHooks Function({bool budgetItemsRefs, bool expenseItemsRefs})
     >;
-typedef $$BudgetsTableCreateCompanionBuilder =
-    BudgetsCompanion Function({
+typedef $$BudgetItemsTableCreateCompanionBuilder =
+    BudgetItemsCompanion Function({
       Value<int> id,
       Value<DateTime> createdAt,
       required String name,
@@ -1826,8 +1862,8 @@ typedef $$BudgetsTableCreateCompanionBuilder =
       required int periodDays,
       Value<int?> trip,
     });
-typedef $$BudgetsTableUpdateCompanionBuilder =
-    BudgetsCompanion Function({
+typedef $$BudgetItemsTableUpdateCompanionBuilder =
+    BudgetItemsCompanion Function({
       Value<int> id,
       Value<DateTime> createdAt,
       Value<String> name,
@@ -1837,19 +1873,19 @@ typedef $$BudgetsTableUpdateCompanionBuilder =
       Value<int?> trip,
     });
 
-final class $$BudgetsTableReferences
-    extends BaseReferences<_$AppDatabase, $BudgetsTable, Budget> {
-  $$BudgetsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$BudgetItemsTableReferences
+    extends BaseReferences<_$AppDatabase, $BudgetItemsTable, BudgetItem> {
+  $$BudgetItemsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $TripsTable _tripTable(_$AppDatabase db) =>
-      db.trips.createAlias($_aliasNameGenerator(db.budgets.trip, db.trips.id));
+  static $TripItemsTable _tripTable(_$AppDatabase db) => db.tripItems
+      .createAlias($_aliasNameGenerator(db.budgetItems.trip, db.tripItems.id));
 
-  $$TripsTableProcessedTableManager? get trip {
+  $$TripItemsTableProcessedTableManager? get trip {
     final $_column = $_itemColumn<int>('trip');
     if ($_column == null) return null;
-    final manager = $$TripsTableTableManager(
+    final manager = $$TripItemsTableTableManager(
       $_db,
-      $_db.trips,
+      $_db.tripItems,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_tripTable($_db));
     if (item == null) return manager;
@@ -1858,29 +1894,31 @@ final class $$BudgetsTableReferences
     );
   }
 
-  static MultiTypedResultKey<$ExpensesTable, List<Expense>> _expensesRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.expenses,
-    aliasName: $_aliasNameGenerator(db.budgets.id, db.expenses.budget),
+  static MultiTypedResultKey<$ExpenseItemsTable, List<ExpenseItem>>
+  _expenseItemsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.expenseItems,
+    aliasName: $_aliasNameGenerator(
+      db.budgetItems.id,
+      db.expenseItems.budgetId,
+    ),
   );
 
-  $$ExpensesTableProcessedTableManager get expensesRefs {
-    final manager = $$ExpensesTableTableManager(
+  $$ExpenseItemsTableProcessedTableManager get expenseItemsRefs {
+    final manager = $$ExpenseItemsTableTableManager(
       $_db,
-      $_db.expenses,
-    ).filter((f) => f.budget.id.sqlEquals($_itemColumn<int>('id')!));
+      $_db.expenseItems,
+    ).filter((f) => f.budgetId.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(_expensesRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_expenseItemsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
 }
 
-class $$BudgetsTableFilterComposer
-    extends Composer<_$AppDatabase, $BudgetsTable> {
-  $$BudgetsTableFilterComposer({
+class $$BudgetItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $BudgetItemsTable> {
+  $$BudgetItemsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1917,20 +1955,20 @@ class $$BudgetsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  $$TripsTableFilterComposer get trip {
-    final $$TripsTableFilterComposer composer = $composerBuilder(
+  $$TripItemsTableFilterComposer get trip {
+    final $$TripItemsTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.trip,
-      referencedTable: $db.trips,
+      referencedTable: $db.tripItems,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TripsTableFilterComposer(
+          }) => $$TripItemsTableFilterComposer(
             $db: $db,
-            $table: $db.trips,
+            $table: $db.tripItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1940,22 +1978,22 @@ class $$BudgetsTableFilterComposer
     return composer;
   }
 
-  Expression<bool> expensesRefs(
-    Expression<bool> Function($$ExpensesTableFilterComposer f) f,
+  Expression<bool> expenseItemsRefs(
+    Expression<bool> Function($$ExpenseItemsTableFilterComposer f) f,
   ) {
-    final $$ExpensesTableFilterComposer composer = $composerBuilder(
+    final $$ExpenseItemsTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.expenses,
-      getReferencedColumn: (t) => t.budget,
+      referencedTable: $db.expenseItems,
+      getReferencedColumn: (t) => t.budgetId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$ExpensesTableFilterComposer(
+          }) => $$ExpenseItemsTableFilterComposer(
             $db: $db,
-            $table: $db.expenses,
+            $table: $db.expenseItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1966,9 +2004,9 @@ class $$BudgetsTableFilterComposer
   }
 }
 
-class $$BudgetsTableOrderingComposer
-    extends Composer<_$AppDatabase, $BudgetsTable> {
-  $$BudgetsTableOrderingComposer({
+class $$BudgetItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BudgetItemsTable> {
+  $$BudgetItemsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -2005,20 +2043,20 @@ class $$BudgetsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  $$TripsTableOrderingComposer get trip {
-    final $$TripsTableOrderingComposer composer = $composerBuilder(
+  $$TripItemsTableOrderingComposer get trip {
+    final $$TripItemsTableOrderingComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.trip,
-      referencedTable: $db.trips,
+      referencedTable: $db.tripItems,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TripsTableOrderingComposer(
+          }) => $$TripItemsTableOrderingComposer(
             $db: $db,
-            $table: $db.trips,
+            $table: $db.tripItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2029,9 +2067,9 @@ class $$BudgetsTableOrderingComposer
   }
 }
 
-class $$BudgetsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $BudgetsTable> {
-  $$BudgetsTableAnnotationComposer({
+class $$BudgetItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BudgetItemsTable> {
+  $$BudgetItemsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -2058,20 +2096,20 @@ class $$BudgetsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  $$TripsTableAnnotationComposer get trip {
-    final $$TripsTableAnnotationComposer composer = $composerBuilder(
+  $$TripItemsTableAnnotationComposer get trip {
+    final $$TripItemsTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.trip,
-      referencedTable: $db.trips,
+      referencedTable: $db.tripItems,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TripsTableAnnotationComposer(
+          }) => $$TripItemsTableAnnotationComposer(
             $db: $db,
-            $table: $db.trips,
+            $table: $db.tripItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2081,22 +2119,22 @@ class $$BudgetsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> expensesRefs<T extends Object>(
-    Expression<T> Function($$ExpensesTableAnnotationComposer a) f,
+  Expression<T> expenseItemsRefs<T extends Object>(
+    Expression<T> Function($$ExpenseItemsTableAnnotationComposer a) f,
   ) {
-    final $$ExpensesTableAnnotationComposer composer = $composerBuilder(
+    final $$ExpenseItemsTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.expenses,
-      getReferencedColumn: (t) => t.budget,
+      referencedTable: $db.expenseItems,
+      getReferencedColumn: (t) => t.budgetId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$ExpensesTableAnnotationComposer(
+          }) => $$ExpenseItemsTableAnnotationComposer(
             $db: $db,
-            $table: $db.expenses,
+            $table: $db.expenseItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2107,32 +2145,32 @@ class $$BudgetsTableAnnotationComposer
   }
 }
 
-class $$BudgetsTableTableManager
+class $$BudgetItemsTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $BudgetsTable,
-          Budget,
-          $$BudgetsTableFilterComposer,
-          $$BudgetsTableOrderingComposer,
-          $$BudgetsTableAnnotationComposer,
-          $$BudgetsTableCreateCompanionBuilder,
-          $$BudgetsTableUpdateCompanionBuilder,
-          (Budget, $$BudgetsTableReferences),
-          Budget,
-          PrefetchHooks Function({bool trip, bool expensesRefs})
+          $BudgetItemsTable,
+          BudgetItem,
+          $$BudgetItemsTableFilterComposer,
+          $$BudgetItemsTableOrderingComposer,
+          $$BudgetItemsTableAnnotationComposer,
+          $$BudgetItemsTableCreateCompanionBuilder,
+          $$BudgetItemsTableUpdateCompanionBuilder,
+          (BudgetItem, $$BudgetItemsTableReferences),
+          BudgetItem,
+          PrefetchHooks Function({bool trip, bool expenseItemsRefs})
         > {
-  $$BudgetsTableTableManager(_$AppDatabase db, $BudgetsTable table)
+  $$BudgetItemsTableTableManager(_$AppDatabase db, $BudgetItemsTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$BudgetsTableFilterComposer($db: db, $table: table),
+              $$BudgetItemsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$BudgetsTableOrderingComposer($db: db, $table: table),
+              $$BudgetItemsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$BudgetsTableAnnotationComposer($db: db, $table: table),
+              $$BudgetItemsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -2142,7 +2180,7 @@ class $$BudgetsTableTableManager
                 Value<int> amount = const Value.absent(),
                 Value<int> periodDays = const Value.absent(),
                 Value<int?> trip = const Value.absent(),
-              }) => BudgetsCompanion(
+              }) => BudgetItemsCompanion(
                 id: id,
                 createdAt: createdAt,
                 name: name,
@@ -2160,7 +2198,7 @@ class $$BudgetsTableTableManager
                 required int amount,
                 required int periodDays,
                 Value<int?> trip = const Value.absent(),
-              }) => BudgetsCompanion.insert(
+              }) => BudgetItemsCompanion.insert(
                 id: id,
                 createdAt: createdAt,
                 name: name,
@@ -2173,14 +2211,14 @@ class $$BudgetsTableTableManager
               .map(
                 (e) => (
                   e.readTable(table),
-                  $$BudgetsTableReferences(db, table, e),
+                  $$BudgetItemsTableReferences(db, table, e),
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({trip = false, expensesRefs = false}) {
+          prefetchHooksCallback: ({trip = false, expenseItemsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (expensesRefs) db.expenses],
+              explicitlyWatchedTables: [if (expenseItemsRefs) db.expenseItems],
               addJoins:
                   <
                     T extends TableManagerState<
@@ -2202,9 +2240,9 @@ class $$BudgetsTableTableManager
                           state.withJoin(
                                 currentTable: table,
                                 currentColumn: table.trip,
-                                referencedTable: $$BudgetsTableReferences
+                                referencedTable: $$BudgetItemsTableReferences
                                     ._tripTable(db),
-                                referencedColumn: $$BudgetsTableReferences
+                                referencedColumn: $$BudgetItemsTableReferences
                                     ._tripTable(db)
                                     .id,
                               )
@@ -2215,15 +2253,23 @@ class $$BudgetsTableTableManager
                   },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (expensesRefs)
-                    await $_getPrefetchedData<Budget, $BudgetsTable, Expense>(
+                  if (expenseItemsRefs)
+                    await $_getPrefetchedData<
+                      BudgetItem,
+                      $BudgetItemsTable,
+                      ExpenseItem
+                    >(
                       currentTable: table,
-                      referencedTable: $$BudgetsTableReferences
-                          ._expensesRefsTable(db),
+                      referencedTable: $$BudgetItemsTableReferences
+                          ._expenseItemsRefsTable(db),
                       managerFromTypedResult: (p0) =>
-                          $$BudgetsTableReferences(db, table, p0).expensesRefs,
+                          $$BudgetItemsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).expenseItemsRefs,
                       referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.budget == item.id),
+                          referencedItems.where((e) => e.budgetId == item.id),
                       typedResults: items,
                     ),
                 ];
@@ -2234,76 +2280,79 @@ class $$BudgetsTableTableManager
       );
 }
 
-typedef $$BudgetsTableProcessedTableManager =
+typedef $$BudgetItemsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $BudgetsTable,
-      Budget,
-      $$BudgetsTableFilterComposer,
-      $$BudgetsTableOrderingComposer,
-      $$BudgetsTableAnnotationComposer,
-      $$BudgetsTableCreateCompanionBuilder,
-      $$BudgetsTableUpdateCompanionBuilder,
-      (Budget, $$BudgetsTableReferences),
-      Budget,
-      PrefetchHooks Function({bool trip, bool expensesRefs})
+      $BudgetItemsTable,
+      BudgetItem,
+      $$BudgetItemsTableFilterComposer,
+      $$BudgetItemsTableOrderingComposer,
+      $$BudgetItemsTableAnnotationComposer,
+      $$BudgetItemsTableCreateCompanionBuilder,
+      $$BudgetItemsTableUpdateCompanionBuilder,
+      (BudgetItem, $$BudgetItemsTableReferences),
+      BudgetItem,
+      PrefetchHooks Function({bool trip, bool expenseItemsRefs})
     >;
-typedef $$ExpensesTableCreateCompanionBuilder =
-    ExpensesCompanion Function({
+typedef $$ExpenseItemsTableCreateCompanionBuilder =
+    ExpenseItemsCompanion Function({
       Value<int> id,
       Value<DateTime> createdAt,
       required double amount,
       required String desc,
       required DateTime time,
       required String currency,
-      Value<int?> trip,
-      Value<int?> budget,
+      Value<int?> tripId,
+      Value<int?> budgetId,
     });
-typedef $$ExpensesTableUpdateCompanionBuilder =
-    ExpensesCompanion Function({
+typedef $$ExpenseItemsTableUpdateCompanionBuilder =
+    ExpenseItemsCompanion Function({
       Value<int> id,
       Value<DateTime> createdAt,
       Value<double> amount,
       Value<String> desc,
       Value<DateTime> time,
       Value<String> currency,
-      Value<int?> trip,
-      Value<int?> budget,
+      Value<int?> tripId,
+      Value<int?> budgetId,
     });
 
-final class $$ExpensesTableReferences
-    extends BaseReferences<_$AppDatabase, $ExpensesTable, Expense> {
-  $$ExpensesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$ExpenseItemsTableReferences
+    extends BaseReferences<_$AppDatabase, $ExpenseItemsTable, ExpenseItem> {
+  $$ExpenseItemsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $TripsTable _tripTable(_$AppDatabase db) =>
-      db.trips.createAlias($_aliasNameGenerator(db.expenses.trip, db.trips.id));
+  static $TripItemsTable _tripIdTable(_$AppDatabase db) =>
+      db.tripItems.createAlias(
+        $_aliasNameGenerator(db.expenseItems.tripId, db.tripItems.id),
+      );
 
-  $$TripsTableProcessedTableManager? get trip {
-    final $_column = $_itemColumn<int>('trip');
+  $$TripItemsTableProcessedTableManager? get tripId {
+    final $_column = $_itemColumn<int>('trip_id');
     if ($_column == null) return null;
-    final manager = $$TripsTableTableManager(
+    final manager = $$TripItemsTableTableManager(
       $_db,
-      $_db.trips,
+      $_db.tripItems,
     ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_tripTable($_db));
+    final item = $_typedResult.readTableOrNull(_tripIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
 
-  static $BudgetsTable _budgetTable(_$AppDatabase db) => db.budgets.createAlias(
-    $_aliasNameGenerator(db.expenses.budget, db.budgets.id),
-  );
+  static $BudgetItemsTable _budgetIdTable(_$AppDatabase db) =>
+      db.budgetItems.createAlias(
+        $_aliasNameGenerator(db.expenseItems.budgetId, db.budgetItems.id),
+      );
 
-  $$BudgetsTableProcessedTableManager? get budget {
-    final $_column = $_itemColumn<int>('budget');
+  $$BudgetItemsTableProcessedTableManager? get budgetId {
+    final $_column = $_itemColumn<int>('budget_id');
     if ($_column == null) return null;
-    final manager = $$BudgetsTableTableManager(
+    final manager = $$BudgetItemsTableTableManager(
       $_db,
-      $_db.budgets,
+      $_db.budgetItems,
     ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_budgetTable($_db));
+    final item = $_typedResult.readTableOrNull(_budgetIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -2311,9 +2360,9 @@ final class $$ExpensesTableReferences
   }
 }
 
-class $$ExpensesTableFilterComposer
-    extends Composer<_$AppDatabase, $ExpensesTable> {
-  $$ExpensesTableFilterComposer({
+class $$ExpenseItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $ExpenseItemsTable> {
+  $$ExpenseItemsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -2350,20 +2399,20 @@ class $$ExpensesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  $$TripsTableFilterComposer get trip {
-    final $$TripsTableFilterComposer composer = $composerBuilder(
+  $$TripItemsTableFilterComposer get tripId {
+    final $$TripItemsTableFilterComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.trip,
-      referencedTable: $db.trips,
+      getCurrentColumn: (t) => t.tripId,
+      referencedTable: $db.tripItems,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TripsTableFilterComposer(
+          }) => $$TripItemsTableFilterComposer(
             $db: $db,
-            $table: $db.trips,
+            $table: $db.tripItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2373,20 +2422,20 @@ class $$ExpensesTableFilterComposer
     return composer;
   }
 
-  $$BudgetsTableFilterComposer get budget {
-    final $$BudgetsTableFilterComposer composer = $composerBuilder(
+  $$BudgetItemsTableFilterComposer get budgetId {
+    final $$BudgetItemsTableFilterComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.budget,
-      referencedTable: $db.budgets,
+      getCurrentColumn: (t) => t.budgetId,
+      referencedTable: $db.budgetItems,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$BudgetsTableFilterComposer(
+          }) => $$BudgetItemsTableFilterComposer(
             $db: $db,
-            $table: $db.budgets,
+            $table: $db.budgetItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2397,9 +2446,9 @@ class $$ExpensesTableFilterComposer
   }
 }
 
-class $$ExpensesTableOrderingComposer
-    extends Composer<_$AppDatabase, $ExpensesTable> {
-  $$ExpensesTableOrderingComposer({
+class $$ExpenseItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ExpenseItemsTable> {
+  $$ExpenseItemsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -2436,20 +2485,20 @@ class $$ExpensesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  $$TripsTableOrderingComposer get trip {
-    final $$TripsTableOrderingComposer composer = $composerBuilder(
+  $$TripItemsTableOrderingComposer get tripId {
+    final $$TripItemsTableOrderingComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.trip,
-      referencedTable: $db.trips,
+      getCurrentColumn: (t) => t.tripId,
+      referencedTable: $db.tripItems,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TripsTableOrderingComposer(
+          }) => $$TripItemsTableOrderingComposer(
             $db: $db,
-            $table: $db.trips,
+            $table: $db.tripItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2459,20 +2508,20 @@ class $$ExpensesTableOrderingComposer
     return composer;
   }
 
-  $$BudgetsTableOrderingComposer get budget {
-    final $$BudgetsTableOrderingComposer composer = $composerBuilder(
+  $$BudgetItemsTableOrderingComposer get budgetId {
+    final $$BudgetItemsTableOrderingComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.budget,
-      referencedTable: $db.budgets,
+      getCurrentColumn: (t) => t.budgetId,
+      referencedTable: $db.budgetItems,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$BudgetsTableOrderingComposer(
+          }) => $$BudgetItemsTableOrderingComposer(
             $db: $db,
-            $table: $db.budgets,
+            $table: $db.budgetItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2483,9 +2532,9 @@ class $$ExpensesTableOrderingComposer
   }
 }
 
-class $$ExpensesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $ExpensesTable> {
-  $$ExpensesTableAnnotationComposer({
+class $$ExpenseItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ExpenseItemsTable> {
+  $$ExpenseItemsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -2510,20 +2559,20 @@ class $$ExpensesTableAnnotationComposer
   GeneratedColumn<String> get currency =>
       $composableBuilder(column: $table.currency, builder: (column) => column);
 
-  $$TripsTableAnnotationComposer get trip {
-    final $$TripsTableAnnotationComposer composer = $composerBuilder(
+  $$TripItemsTableAnnotationComposer get tripId {
+    final $$TripItemsTableAnnotationComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.trip,
-      referencedTable: $db.trips,
+      getCurrentColumn: (t) => t.tripId,
+      referencedTable: $db.tripItems,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TripsTableAnnotationComposer(
+          }) => $$TripItemsTableAnnotationComposer(
             $db: $db,
-            $table: $db.trips,
+            $table: $db.tripItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2533,20 +2582,20 @@ class $$ExpensesTableAnnotationComposer
     return composer;
   }
 
-  $$BudgetsTableAnnotationComposer get budget {
-    final $$BudgetsTableAnnotationComposer composer = $composerBuilder(
+  $$BudgetItemsTableAnnotationComposer get budgetId {
+    final $$BudgetItemsTableAnnotationComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.budget,
-      referencedTable: $db.budgets,
+      getCurrentColumn: (t) => t.budgetId,
+      referencedTable: $db.budgetItems,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$BudgetsTableAnnotationComposer(
+          }) => $$BudgetItemsTableAnnotationComposer(
             $db: $db,
-            $table: $db.budgets,
+            $table: $db.budgetItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2557,32 +2606,32 @@ class $$ExpensesTableAnnotationComposer
   }
 }
 
-class $$ExpensesTableTableManager
+class $$ExpenseItemsTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $ExpensesTable,
-          Expense,
-          $$ExpensesTableFilterComposer,
-          $$ExpensesTableOrderingComposer,
-          $$ExpensesTableAnnotationComposer,
-          $$ExpensesTableCreateCompanionBuilder,
-          $$ExpensesTableUpdateCompanionBuilder,
-          (Expense, $$ExpensesTableReferences),
-          Expense,
-          PrefetchHooks Function({bool trip, bool budget})
+          $ExpenseItemsTable,
+          ExpenseItem,
+          $$ExpenseItemsTableFilterComposer,
+          $$ExpenseItemsTableOrderingComposer,
+          $$ExpenseItemsTableAnnotationComposer,
+          $$ExpenseItemsTableCreateCompanionBuilder,
+          $$ExpenseItemsTableUpdateCompanionBuilder,
+          (ExpenseItem, $$ExpenseItemsTableReferences),
+          ExpenseItem,
+          PrefetchHooks Function({bool tripId, bool budgetId})
         > {
-  $$ExpensesTableTableManager(_$AppDatabase db, $ExpensesTable table)
+  $$ExpenseItemsTableTableManager(_$AppDatabase db, $ExpenseItemsTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$ExpensesTableFilterComposer($db: db, $table: table),
+              $$ExpenseItemsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$ExpensesTableOrderingComposer($db: db, $table: table),
+              $$ExpenseItemsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$ExpensesTableAnnotationComposer($db: db, $table: table),
+              $$ExpenseItemsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -2591,17 +2640,17 @@ class $$ExpensesTableTableManager
                 Value<String> desc = const Value.absent(),
                 Value<DateTime> time = const Value.absent(),
                 Value<String> currency = const Value.absent(),
-                Value<int?> trip = const Value.absent(),
-                Value<int?> budget = const Value.absent(),
-              }) => ExpensesCompanion(
+                Value<int?> tripId = const Value.absent(),
+                Value<int?> budgetId = const Value.absent(),
+              }) => ExpenseItemsCompanion(
                 id: id,
                 createdAt: createdAt,
                 amount: amount,
                 desc: desc,
                 time: time,
                 currency: currency,
-                trip: trip,
-                budget: budget,
+                tripId: tripId,
+                budgetId: budgetId,
               ),
           createCompanionCallback:
               ({
@@ -2611,27 +2660,27 @@ class $$ExpensesTableTableManager
                 required String desc,
                 required DateTime time,
                 required String currency,
-                Value<int?> trip = const Value.absent(),
-                Value<int?> budget = const Value.absent(),
-              }) => ExpensesCompanion.insert(
+                Value<int?> tripId = const Value.absent(),
+                Value<int?> budgetId = const Value.absent(),
+              }) => ExpenseItemsCompanion.insert(
                 id: id,
                 createdAt: createdAt,
                 amount: amount,
                 desc: desc,
                 time: time,
                 currency: currency,
-                trip: trip,
-                budget: budget,
+                tripId: tripId,
+                budgetId: budgetId,
               ),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
                   e.readTable(table),
-                  $$ExpensesTableReferences(db, table, e),
+                  $$ExpenseItemsTableReferences(db, table, e),
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({trip = false, budget = false}) {
+          prefetchHooksCallback: ({tripId = false, budgetId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -2651,28 +2700,28 @@ class $$ExpensesTableTableManager
                       dynamic
                     >
                   >(state) {
-                    if (trip) {
+                    if (tripId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.trip,
-                                referencedTable: $$ExpensesTableReferences
-                                    ._tripTable(db),
-                                referencedColumn: $$ExpensesTableReferences
-                                    ._tripTable(db)
+                                currentColumn: table.tripId,
+                                referencedTable: $$ExpenseItemsTableReferences
+                                    ._tripIdTable(db),
+                                referencedColumn: $$ExpenseItemsTableReferences
+                                    ._tripIdTable(db)
                                     .id,
                               )
                               as T;
                     }
-                    if (budget) {
+                    if (budgetId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.budget,
-                                referencedTable: $$ExpensesTableReferences
-                                    ._budgetTable(db),
-                                referencedColumn: $$ExpensesTableReferences
-                                    ._budgetTable(db)
+                                currentColumn: table.budgetId,
+                                referencedTable: $$ExpenseItemsTableReferences
+                                    ._budgetIdTable(db),
+                                referencedColumn: $$ExpenseItemsTableReferences
+                                    ._budgetIdTable(db)
                                     .id,
                               )
                               as T;
@@ -2689,28 +2738,28 @@ class $$ExpensesTableTableManager
       );
 }
 
-typedef $$ExpensesTableProcessedTableManager =
+typedef $$ExpenseItemsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $ExpensesTable,
-      Expense,
-      $$ExpensesTableFilterComposer,
-      $$ExpensesTableOrderingComposer,
-      $$ExpensesTableAnnotationComposer,
-      $$ExpensesTableCreateCompanionBuilder,
-      $$ExpensesTableUpdateCompanionBuilder,
-      (Expense, $$ExpensesTableReferences),
-      Expense,
-      PrefetchHooks Function({bool trip, bool budget})
+      $ExpenseItemsTable,
+      ExpenseItem,
+      $$ExpenseItemsTableFilterComposer,
+      $$ExpenseItemsTableOrderingComposer,
+      $$ExpenseItemsTableAnnotationComposer,
+      $$ExpenseItemsTableCreateCompanionBuilder,
+      $$ExpenseItemsTableUpdateCompanionBuilder,
+      (ExpenseItem, $$ExpenseItemsTableReferences),
+      ExpenseItem,
+      PrefetchHooks Function({bool tripId, bool budgetId})
     >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$TripsTableTableManager get trips =>
-      $$TripsTableTableManager(_db, _db.trips);
-  $$BudgetsTableTableManager get budgets =>
-      $$BudgetsTableTableManager(_db, _db.budgets);
-  $$ExpensesTableTableManager get expenses =>
-      $$ExpensesTableTableManager(_db, _db.expenses);
+  $$TripItemsTableTableManager get tripItems =>
+      $$TripItemsTableTableManager(_db, _db.tripItems);
+  $$BudgetItemsTableTableManager get budgetItems =>
+      $$BudgetItemsTableTableManager(_db, _db.budgetItems);
+  $$ExpenseItemsTableTableManager get expenseItems =>
+      $$ExpenseItemsTableTableManager(_db, _db.expenseItems);
 }
