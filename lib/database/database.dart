@@ -56,7 +56,7 @@ class BudgetItems extends Table {
   IntColumn get amount => integer()();
   IntColumn get periodDays => integer()();
 
-  IntColumn get trip => integer().nullable().references(TripItems, #id)();
+  IntColumn get tripId => integer().nullable().references(TripItems, #id)();
 }
 
 class TripItems extends Table {
@@ -67,7 +67,7 @@ class TripItems extends Table {
   TextColumn get destinations => text().map(StringListTypeConverter())();
   DateTimeColumn get startDate => dateTime()();
   DateTimeColumn get endDate => dateTime()();
-  TextColumn get defaultCurrency => text()();
+  TextColumn get defaultCurrency => text().nullable()();
 }
 
 

@@ -1,38 +1,35 @@
+import 'package:drift/drift.dart';
+import 'package:wisebud/database/database.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
-import 'package:wisebud/models/user.dart';
 import 'package:wisebud/utils.dart';
 
 class Trip{
   String name;
-  DateTime? createdAt;
   List<String> destinations;
   DateTime startDate;
   DateTime endDate;
   String defaultCurrency;
 
-  User? user;
-
   List<Budget> budgets;
   List<Expense> expenses;
 
   int? id;
-  String? userId;
+  DateTime? createdAt;
+  // String? userId;
 
   int get lengthDays => endDate.difference(startDate).inDays;
 
   Trip({
     required this.name,
-    this.createdAt,
     List<String>? destinations,
     DateTime? startDate,
     DateTime? endDate,
     this.defaultCurrency = "USD",
-    this.user,
     List<Budget>? budgets,
     List<Expense>? expenses,
     this.id,
-    this.userId,
+    this.createdAt,
   }) : destinations = destinations ?? [],
        budgets = budgets ?? [],
        expenses = expenses ?? [],
@@ -65,6 +62,35 @@ class Trip{
     (e) =>
         e.budget != null && e.budget!.periodDays > 0 && isInThisMonth(e.time),
   )).fold(0, (sum, e) => sum + e.amount);
+
+    factory Trip.fromItem(TripItem item, {List<Budget>? budgets, List<Expense>? expenses}) {
+    return Trip(
+      id: item.id,
+      createdAt: item.createdAt,
+
+      name: item.name,
+      destinations: item.destinations,
+      startDate: item.startDate,
+      endDate: item.endDate,
+      defaultCurrency: item.defaultCurrency ?? "USD",
+
+      budgets: budgets,
+      expenses: expenses,
+    );
+  }
+
+  TripItemsCompanion toCompanion() {
+    return TripItemsCompanion.insert(
+      id: Value.absentIfNull(id),
+      createdAt: Value.absentIfNull(createdAt),
+
+      name: name,
+      destinations: destinations,
+      startDate: startDate,
+      endDate: endDate,
+      defaultCurrency: Value.absentIfNull(defaultCurrency),
+    );
+  }
 
   // // Convert Supabase row → Trip
   // factory Trip.fromRow(Map<String, dynamic> map) {

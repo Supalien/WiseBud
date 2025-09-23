@@ -1,3 +1,5 @@
+import 'package:drift/drift.dart';
+import 'package:wisebud/database/database.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
 
@@ -13,6 +15,7 @@ class Budget {
   List<Expense> expenses;
 
   int? id;
+  DateTime? createdAt;
   int? tripId; // foreign key
 
   Budget({
@@ -24,6 +27,7 @@ class Budget {
     this.trip,
     List<Expense>? expenses,
     this.id,
+    this.createdAt,
     this.tripId,
   }) : expenses = expenses ?? [] {
     for (Expense e in this.expenses) {
@@ -36,6 +40,38 @@ class Budget {
   void addExpense(Expense ex) {
     expenses.add(ex);
   }
+
+    factory Budget.fromItem(BudgetItem item, {Trip? trip, List<Expense>? expenses}) {
+    return Budget(
+      id: item.id,
+      createdAt: item.createdAt,
+
+      name: item.name,
+      desc: item.desc,
+      amount: item.amount,
+      periodDays: item.periodDays,
+
+      tripId: item.tripId,
+      
+      trip: trip,
+      expenses: expenses,
+    );
+  }
+
+  BudgetItemsCompanion toCompanion() {
+    return BudgetItemsCompanion.insert(
+      id: Value.absentIfNull(id),
+      createdAt: Value.absentIfNull(createdAt),
+
+      name: name,
+      desc: Value.absentIfNull(desc),
+      amount: amount,
+      periodDays: periodDays,
+
+      tripId: Value.absentIfNull(tripId ?? trip?.id),
+    );
+  }
+  
   // factory Budget.fromJson(Map<String, dynamic> m) {
   //   var b = Budget(
   //     name: m['name'],
