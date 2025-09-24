@@ -14,6 +14,7 @@ import 'package:wisebud/main.dart';
 // Issue URL: https://github.com/Supalien/WiseBud/issues/1
 
 void main() { // TODO: test2
+              // Issue URL: https://github.com/Supalien/WiseBud/issues/2
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
