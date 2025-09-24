@@ -22,6 +22,8 @@ jobs:
         uses: "alstr/todo-to-issue-action@v5"
         with:
           INSERT_ISSUE_URLS: "true"
+          CLOSE_ISSUES: "true"
+          IDENTIFIERS: "[{\"name\": \"TODO\", \"labels\": []}, {\"name\": \"FIXME\", \"labels\": [\"bug\"]}]"
         env:
           MANUAL_COMMIT_REF: ${{ inputs.MANUAL_COMMIT_REF }}
           MANUAL_BASE_REF: ${{ inputs.MANUAL_BASE_REF }}
