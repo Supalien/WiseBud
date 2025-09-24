@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wisebud/main.dart';
 
 // TODO: test
+// Issue URL: https://github.com/Supalien/WiseBud/issues/1
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
