@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wisebud/database/database.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/models/trips_provider.dart';
@@ -31,10 +32,7 @@ class _BudgetTabState extends State<BudgetTab> {
             clipBehavior: Clip.none,
             children: List<Widget>.from(
               budgets.map(
-                (b) => Provider.value(
-                  value: b,
-                  child: BudgetInfoWidget(),
-                ),
+                (b) => Provider.value(value: b, child: BudgetInfoWidget()),
               ),
             ),
           ),
@@ -57,13 +55,17 @@ class _BudgetTabState extends State<BudgetTab> {
 
     if (!context.mounted) return; // widget doesnt exist
     if (result == null) return; // back button
-
-    Budget nb = Budget(
+    AppDatabase db = context.read<AppDatabase>();
+    Budget newBudget = Budget(
       name: result.name,
       amount: result.amount,
       desc: result.desc,
     );
-    context.read<TripsProvider>().addBudget(nb);
+    context.read<TripsProvider>().addBudget(newBudget);
+    db
+        .into(db.budgetItems)
+        .insert(newBudget.toCompanion())
+        .then((id) => newBudget.id = id);
   }
 }
 
@@ -85,7 +87,7 @@ class BudgetInfoWidget extends StatelessWidget {
         ),
         child: InkWell(
           customBorder: CircleBorder(),
-          onTap: (){}, // TODO: open budget editor screen
+          onTap: () {}, // TODO: open budget editor screen
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -93,7 +95,7 @@ class BudgetInfoWidget extends StatelessWidget {
               Text(
                 '${formatDouble(budget.totalExpenses)} / ${budget.amount} ${context.read<Trip>().defaultCurrency}',
               ),
-              Text("${100 * budget.totalExpenses / budget.amount}%")
+              Text("${100 * budget.totalExpenses / budget.amount}%"),
             ],
           ),
         ),

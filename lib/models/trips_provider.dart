@@ -19,6 +19,7 @@ class TripsProvider with ChangeNotifier {
     loadAll();
   }
   Future<void> loadAll() async {
+    _trips.clear();
     for (var t in await db.select(db.tripItems).get()) {
       _trips.add(await db.loadTripById(t.id));
     }
@@ -34,6 +35,11 @@ class TripsProvider with ChangeNotifier {
     if (_trips.isNotEmpty) {
       _index = 0;
     }
+  }
+
+  void addFirst(Trip t){
+    _trips.add(t);
+    _index = 0;
   }
 
   void addTrip(Trip t) {
@@ -81,10 +87,10 @@ class TripsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addExpense(Expense ex) {
+  void addExpense(Expense ex, [Budget? b]) {
     trip!.addExpense(ex);
-    if (ex.budget != null) {
-      ex.budget!.addExpense(ex);
+    if (b != null) {
+      b.addExpense(ex);
     }
     notifyListeners();
   }

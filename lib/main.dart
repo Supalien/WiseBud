@@ -6,7 +6,6 @@ import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/models/trips_provider.dart';
 import 'package:wisebud/pages/budget_tab.dart';
 import 'package:wisebud/pages/new_expense.dart';
-// import 'package:wisebud/pages/login_page.dart';
 import 'package:wisebud/pages/trip_tab.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +20,7 @@ Future<void> main() async {
           dispose: (context, db) => db.close(),
         ),
         ChangeNotifierProvider<TripsProvider>(
-          create: (context) =>
-              TripsProvider(context.read<AppDatabase>()),
+          create: (context) => TripsProvider(context.read<AppDatabase>()),
         ),
         ProxyProvider<TripsProvider, Trip?>(
           update: (context, tripsProvider, previousTrip) => tripsProvider.trip,
@@ -81,22 +79,17 @@ final Trip fakeTrip = Trip(
 );
 final Trip fakeTrip2 = Trip(name: "my second trip");
 
-Trip getCurrentTrip() {
-  // NOT IMPLEMENTED, should get the current trip from storage or cloud
-  return fakeTrip;
-}
-
 // dump trip data to database for dev purposes // FIXME
 void dumpTrip(AppDatabase db, Trip trip) async {
-  int tripId = await db.into(db.tripItems).insert(fakeTrip.toCompanion());
-  for (var b in fakeTrip.budgets) {
+  int tripId = await db.into(db.tripItems).insert(trip.toCompanion());
+  for (var b in trip.budgets) {
     b.tripId = tripId;
     int budgetId = await db.into(db.budgetItems).insert(b.toCompanion());
     for (var e in b.expenses) {
       e.budgetId = budgetId;
     }
   }
-  for (var e in fakeTrip.expenses) {
+  for (var e in trip.expenses) {
     e.tripId = tripId;
     await db.into(db.expenseItems).insert(e.toCompanion());
   }
@@ -166,9 +159,19 @@ class _MyHomePageState extends State<MyHomePage> {
     // This method is rerun every time setState is called,
 
     TripsProvider tripsProvider = context.watch<TripsProvider>();
+    AppDatabase database = context.read<AppDatabase>();
 
-    if (tripsProvider.isLoading){
+    if (tripsProvider.isLoading) {
       return CircularProgressIndicator(); // FIXME this is ugly
+    }
+
+    if (tripsProvider.trip == null) { // TODO: onboarding
+      Trip firstTrip = Trip(name: "My first trip");
+      tripsProvider.addFirst(firstTrip);
+      database
+          .into(database.tripItems)
+          .insert(firstTrip.toCompanion())
+          .then((id) => firstTrip.id = id);
     }
 
     return Scaffold(
@@ -182,14 +185,12 @@ class _MyHomePageState extends State<MyHomePage> {
             child: const Text('test button'),
             onPressed: () async {
               Stopwatch stopwatch = Stopwatch()..start();
-              var db = context.read<AppDatabase>();
-              Trip t = await db.loadTripById(2);
+              var db = database;
+              dumpTrip(db, fakeTrip);
+              dumpTrip(db, fakeTrip2);
               stopwatch.stop();
-              print(t);
-              print(t.destinations);
-              print(t.budgets);
-              print(t.expenses);
               print(stopwatch.elapsed.toString());
+              tripsProvider.loadAll();
             },
           ),
         ],
@@ -222,8 +223,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text("Trips", textScaler: TextScaler.linear(1.5)),
                     ),
                     TextButton.icon(
-                      onPressed: () {
-                        tripsProvider.addTrip(Trip(name: "test trip"));
+                      onPressed: () async {
+                        Trip newTrip = Trip(
+                          name: "test trip",
+                        ); // TODO: Trip form
+                        tripsProvider.addTrip(newTrip);
+                        newTrip.id = await database
+                            .into(database.tripItems)
+                            .insert(newTrip.toCompanion());
                       },
                       label: Text("New Trip"),
                       icon: Icon(Icons.add_circle_sharp),
@@ -262,17 +269,18 @@ Future<void> _newExpense(BuildContext context) async {
 
   if (!context.mounted) return; // widget doesnt exist
   if (result == null) return; // result of back button
-
-  Expense expense = Expense(
+  AppDatabase db = context.read<AppDatabase>();
+  Expense newExpense = Expense(
     amount: result.amount,
     desc: result.desc,
     currency: result.currency,
     time: result.time,
   );
-  if (result.budget is Budget) {
-    (result.budget as Budget).addExpense(expense);
-  }
-  context.read<TripsProvider>().addExpense(expense);
+  context.read<TripsProvider>().addExpense(newExpense, result.budget);
+  db
+      .into(db.expenseItems)
+      .insert(newExpense.toCompanion())
+      .then((id) => newExpense.id = id);
 }
 
 extension ContextExtension on BuildContext {
