@@ -45,6 +45,7 @@ class AppDatabase extends _$AppDatabase {
     Budget b = Budget.fromItem(budgetItem); // convert item to model
     final budgetExpenseItems = await managers.expenseItems.filter((f) => f.budgetId.id(id)).get(); // get all expenses that reference this budget
     // add expenses to Budget
+    // Issue URL: https://github.com/Supalien/WiseBud/issues/17
     for (ExpenseItem item in budgetExpenseItems) {
       b.addExpense(Expense.fromItem(item));
     }
@@ -58,16 +59,19 @@ class AppDatabase extends _$AppDatabase {
     
     Trip t = Trip.fromItem(tripItem); // convert to model
     // load every budget of trip and add it to trip
+    // Issue URL: https://github.com/Supalien/WiseBud/issues/16
     for (BudgetItem budgetItem in tripBudgetItems) {
       Budget b = Budget.fromItem(budgetItem);
       final budgetExpenseItems = await managers.expenseItems.filter((f) => f.budgetId.id(id)).get(); // all expenses of budget
       // add expensed to Budget
+      // Issue URL: https://github.com/Supalien/WiseBud/issues/15
       for (ExpenseItem expenseItem in budgetExpenseItems) {
         b.addExpense(Expense.fromItem(expenseItem));
       }
       t.addBudget(b);
     }
     // add all expenses
+    // Issue URL: https://github.com/Supalien/WiseBud/issues/14
     for (ExpenseItem expenseItem in tripExpenseItems) {
       t.addExpense(Expense.fromItem(expenseItem));
     }

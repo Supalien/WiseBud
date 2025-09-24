@@ -163,6 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (tripsProvider.isLoading) {
       return CircularProgressIndicator(); // FIXME this is ugly
+                                          // Issue URL: https://github.com/Supalien/WiseBud/issues/18
     }
 
     if (tripsProvider.trip == null) { // TODO: onboarding
