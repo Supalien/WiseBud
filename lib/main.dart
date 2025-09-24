@@ -80,6 +80,7 @@ final Trip fakeTrip = Trip(
 final Trip fakeTrip2 = Trip(name: "my second trip");
 
 // dump trip data to database for dev purposes // FIXME: not for prod
+// Issue URL: https://github.com/Supalien/WiseBud/issues/21
 void dumpTrip(AppDatabase db, Trip trip) async {
   int tripId = await db.into(db.tripItems).insert(trip.toCompanion());
   for (var b in trip.budgets) {
@@ -163,9 +164,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (tripsProvider.isLoading) {
       return CircularProgressIndicator(); // FIXME: this is ugly
+                                          // Issue URL: https://github.com/Supalien/WiseBud/issues/20
     }
 
     if (tripsProvider.trip == null) { // ADDME: onboarding
+                                      // Issue URL: https://github.com/Supalien/WiseBud/issues/19
       Trip firstTrip = Trip(name: "My first trip");
       tripsProvider.addFirst(firstTrip);
       database

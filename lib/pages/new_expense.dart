@@ -55,10 +55,12 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
               onSelected: (value) => budget = value as Budget?,
             ),
             TextFormField( // ADDME: makes this a dropdown to select currency from a list of real currencies
+                           // Issue URL: https://github.com/Supalien/WiseBud/issues/24
               onSaved: (newValue) => currency = newValue,
               decoration: InputDecoration(hintText: "Enter currency", labelText: "Currency"),
             ),
             //ADDME: add a datetime picker to pick a time for the expense (default is the time the expense was crated)
+            //Issue URL: https://github.com/Supalien/WiseBud/issues/23
             Divider(),
 
             ElevatedButton(onPressed: () {
