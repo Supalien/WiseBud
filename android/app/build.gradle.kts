@@ -21,6 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // Issue URL: https://github.com/Supalien/WiseBud/issues/4
         applicationId = "com.dorosoup.wisebud"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
@@ -33,6 +34,7 @@ android {
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
+            // Issue URL: https://github.com/Supalien/WiseBud/issues/3
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }

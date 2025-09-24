@@ -166,6 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     if (tripsProvider.trip == null) { // TODO: onboarding
+                                      // Issue URL: https://github.com/Supalien/WiseBud/issues/6
       Trip firstTrip = Trip(name: "My first trip");
       tripsProvider.addFirst(firstTrip);
       database
@@ -227,6 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Trip newTrip = Trip(
                           name: "test trip",
                         ); // TODO: Trip form
+                           // Issue URL: https://github.com/Supalien/WiseBud/issues/5
                         tripsProvider.addTrip(newTrip);
                         newTrip.id = await database
                             .into(database.tripItems)

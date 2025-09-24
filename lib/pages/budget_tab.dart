@@ -88,6 +88,7 @@ class BudgetInfoWidget extends StatelessWidget {
         child: InkWell(
           customBorder: CircleBorder(),
           onTap: () {}, // TODO: open budget editor screen
+                        // Issue URL: https://github.com/Supalien/WiseBud/issues/9
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
