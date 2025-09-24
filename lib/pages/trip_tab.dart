@@ -59,7 +59,7 @@ class TripBudgetInfoWidget extends StatelessWidget {
         shadowColor: Theme.of(context).colorScheme.shadow,
         child: InkWell(
           onTap: () {}, // TODO: do something with this
-                        // Issue URL: https://github.com/Supalien/WiseBud/issues/12
+                        // labels: enhancement // <- ignore this comment its for github actions
           borderRadius: BorderRadius.circular(15),
           child: Center(
             child: Column(

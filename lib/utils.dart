@@ -2,9 +2,6 @@ String formatDouble(double n) {
   return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 2);
 }
 
-// TODO: test
-// Issue URL: https://github.com/Supalien/WiseBud/issues/13
-
 bool isInThisMonth(DateTime d) {
   // var now = DateTime.now();
   // ***IMPORTANT: BELOW LINE FOR TESTING PURPOSES ONLY! REPLACE LATER WITH ABOVE LINE!
