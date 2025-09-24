@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:wisebud/database/database.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
@@ -14,21 +13,19 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  TripsProvider tripsProvider = TripsProvider.from([
-    fakeTrip,
-    fakeTrip2,
-  ]); // FIXME: only for testing
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: tripsProvider),
-        ProxyProvider<TripsProvider, Trip?>(
-          create: (context) => tripsProvider.trip,
-          update: (context, tripsProvider, previousTrip) => tripsProvider.trip,
-        ),
         Provider<AppDatabase>(
           create: (context) => AppDatabase(),
           dispose: (context, db) => db.close(),
+        ),
+        ChangeNotifierProvider<TripsProvider>(
+          create: (context) =>
+              TripsProvider(context.read<AppDatabase>()),
+        ),
+        ProxyProvider<TripsProvider, Trip?>(
+          update: (context, tripsProvider, previousTrip) => tripsProvider.trip,
         ),
       ],
       child: MyApp(),
@@ -36,7 +33,6 @@ Future<void> main() async {
   );
 }
 
-final SupabaseClient supabase = Supabase.instance.client;
 //fake data
 final Trip fakeTrip = Trip(
   name: 'My Dream Trip',
@@ -143,7 +139,6 @@ class MyApp extends StatelessWidget {
           dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
         ),
       ),
-      themeMode: ThemeMode.dark, //FIXME: delete this line
       home: DefaultTabController(length: 3, child: MyHomePage()),
     );
   }
@@ -170,11 +165,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called,
 
-    // FOR TESTING:
-    // Trip trip = fakeTrip; // CHANGE LATER
-    // print(Theme.of(context).colorScheme.primary);
-
     TripsProvider tripsProvider = context.watch<TripsProvider>();
+
+    if (tripsProvider.isLoading){
+      return CircularProgressIndicator(); // FIXME this is ugly
+    }
 
     return Scaffold(
       appBar: AppBar(
