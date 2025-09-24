@@ -1,7 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:wisebud/models/budget.dart';
+import 'package:wisebud/models/expense.dart';
 import 'dart:convert';
+
+import 'package:wisebud/models/trip.dart';
 
 part 'database.g.dart';
 
@@ -30,6 +34,44 @@ class AppDatabase extends _$AppDatabase {
         await customStatement('PRAGMA foreign_keys = ON');
       },
     );
+  }
+
+  Future<Expense> loadExpenseById(int id) async {
+    return Expense.fromItem(await managers.expenseItems.filter((f) => f.id(id)).getSingle());
+  }
+
+  Future<Budget> loadBudgetById(int id) async {
+    final budgetItem = await managers.budgetItems.filter((f) => f.id(id)).getSingle(); // get budget item by id
+    Budget b = Budget.fromItem(budgetItem); // convert item to model
+    final budgetExpenseItems = await managers.expenseItems.filter((f) => f.budgetId.id(id)).get(); // get all expenses that reference this budget
+    // add expenses to Budget
+    for (ExpenseItem item in budgetExpenseItems) {
+      b.addExpense(Expense.fromItem(item));
+    }
+    return b;
+  }
+
+  Future<Trip> loadTripById(int id) async {
+    final tripItem = await managers.tripItems.filter((f) => f.id(id)).getSingle(); // get trip item by id
+    final tripBudgetItems = await managers.budgetItems.filter((f) => f.tripId.id(id)).get(); // get all budgets that reference this trip
+    final tripExpenseItems = await managers.expenseItems.filter((f) => f.tripId.id(id)).get(); // get all expenses that reference this trip
+    
+    Trip t = Trip.fromItem(tripItem); // convert to model
+    // load every budget of trip and add it to trip
+    for (BudgetItem budgetItem in tripBudgetItems) {
+      Budget b = Budget.fromItem(budgetItem);
+      final budgetExpenseItems = await managers.expenseItems.filter((f) => f.budgetId.id(id)).get(); // all expenses of budget
+      // add expensed to Budget
+      for (ExpenseItem expenseItem in budgetExpenseItems) {
+        b.addExpense(Expense.fromItem(expenseItem));
+      }
+      t.addBudget(b);
+    }
+    // add all expenses
+    for (ExpenseItem expenseItem in tripExpenseItems) {
+      t.addExpense(Expense.fromItem(expenseItem));
+    }
+    return t;
   }
 }
 

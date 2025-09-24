@@ -66,6 +66,9 @@ class Expense {
     );
   }
 
+  @override
+  String toString() => "Expense $amount $currency ${id!=null? "id=$id" : ""}";
+
   // factory Expense.fromJson(Map<String, dynamic> m) {
   //   var e = Expense(
   //     amount: m['amount'],

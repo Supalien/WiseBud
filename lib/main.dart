@@ -90,6 +90,22 @@ Trip getCurrentTrip() {
   return fakeTrip;
 }
 
+// dump trip data to database for dev purposes // FIXME
+void dumpTrip(AppDatabase db, Trip trip) async {
+  int tripId = await db.into(db.tripItems).insert(fakeTrip.toCompanion());
+  for (var b in fakeTrip.budgets) {
+    b.tripId = tripId;
+    int budgetId = await db.into(db.budgetItems).insert(b.toCompanion());
+    for (var e in b.expenses) {
+      e.budgetId = budgetId;
+    }
+  }
+  for (var e in fakeTrip.expenses) {
+    e.tripId = tripId;
+    await db.into(db.expenseItems).insert(e.toCompanion());
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -169,10 +185,16 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           ElevatedButton(
             child: const Text('test button'),
-            onPressed: () {
-              // context.read<TripsProvider>().addExpense(Expense(amount: 50, budget: context.read<Trip>().budgets[0]));
-              context.read<TripsProvider>().select(Trip(name: 'lol'));
-              context.read<TripsProvider>().addExpense(Expense(amount: 100));
+            onPressed: () async {
+              Stopwatch stopwatch = Stopwatch()..start();
+              var db = context.read<AppDatabase>();
+              Trip t = await db.loadTripById(2);
+              stopwatch.stop();
+              print(t);
+              print(t.destinations);
+              print(t.budgets);
+              print(t.expenses);
+              print(stopwatch.elapsed.toString());
             },
           ),
         ],
@@ -260,6 +282,7 @@ Future<void> _newExpense(BuildContext context) async {
 
 extension ContextExtension on BuildContext {
   void showSnackBar(String message, {bool isError = false}) {
+    ScaffoldMessenger.of(this).clearSnackBars();
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
         content: Text(message),

@@ -39,6 +39,8 @@ class Budget {
 
   void addExpense(Expense ex) {
     expenses.add(ex);
+    ex.budget = this;
+    ex.budgetId = id;
   }
 
     factory Budget.fromItem(BudgetItem item, {Trip? trip, List<Expense>? expenses}) {
@@ -71,6 +73,9 @@ class Budget {
       tripId: Value.absentIfNull(tripId ?? trip?.id),
     );
   }
+
+  @override
+  String toString() => "Budget '$name'[${id ?? 0}] ${trip!=null ? "of $trip" : ""} - $amount";
   
   // factory Budget.fromJson(Map<String, dynamic> m) {
   //   var b = Budget(

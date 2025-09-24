@@ -4,7 +4,7 @@ import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/utils.dart';
 
-class Trip{
+class Trip {
   String name;
   List<String> destinations;
   DateTime startDate;
@@ -34,8 +34,7 @@ class Trip{
        budgets = budgets ?? [],
        expenses = expenses ?? [],
        startDate = startDate ?? DateTime.now(),
-       endDate = endDate ?? DateTime.now().add(Duration(days: 30)) 
-       {
+       endDate = endDate ?? DateTime.now().add(Duration(days: 30)) {
     for (Budget b in this.budgets) {
       b.trip = this;
       this.expenses.addAll(b.expenses);
@@ -63,7 +62,23 @@ class Trip{
         e.budget != null && e.budget!.periodDays > 0 && isInThisMonth(e.time),
   )).fold(0, (sum, e) => sum + e.amount);
 
-    factory Trip.fromItem(TripItem item, {List<Budget>? budgets, List<Expense>? expenses}) {
+  void addExpense(Expense ex) {
+    expenses.add(ex);
+    ex.trip = this;
+    ex.tripId = id;
+  }
+
+  void addBudget(Budget b) {
+    budgets.add(b);
+    b.trip = this;
+    b.tripId = id;
+  }
+
+  factory Trip.fromItem(
+    TripItem item, {
+    List<Budget>? budgets,
+    List<Expense>? expenses,
+  }) {
     return Trip(
       id: item.id,
       createdAt: item.createdAt,
@@ -91,6 +106,9 @@ class Trip{
       defaultCurrency: Value.absentIfNull(defaultCurrency),
     );
   }
+
+  @override
+  String toString() => "Trip '$name'[${id ?? 0}]";
 
   // // Convert Supabase row → Trip
   // factory Trip.fromRow(Map<String, dynamic> map) {
@@ -136,7 +154,6 @@ class Trip{
   //   if (userId != null) 'userId': userId,
   // };
 }
-
 
 /**
 final response = await supabase
