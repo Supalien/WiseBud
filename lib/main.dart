@@ -162,12 +162,14 @@ class _MyHomePageState extends State<MyHomePage> {
     TripsProvider tripsProvider = context.watch<TripsProvider>();
 
     if (tripsProvider.isLoading) {
-      return CircularProgressIndicator(); // FIXME: this is ugly
-                                          // Issue URL: https://github.com/Supalien/WiseBud/issues/20
+      return Material(
+        child: Center(child: CircularProgressIndicator()),
+      );
     }
 
-    if (tripsProvider.trip == null) { // ADDME: onboarding
-                                      // Issue URL: https://github.com/Supalien/WiseBud/issues/19
+    if (tripsProvider.trip == null) {
+      // ADDME: onboarding
+      // Issue URL: https://github.com/Supalien/WiseBud/issues/19
       Trip firstTrip = Trip(name: "My first trip");
       tripsProvider.addFirst(firstTrip);
     }
@@ -193,7 +195,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: TabBarView(children: [TripTab(), BudgetTab(), Text('Settings tab')]),
+      body: TabBarView(
+        children: [TripTab(), BudgetTab(), Text('Settings tab')],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _newExpense(context),
         tooltip: 'Increment',
@@ -225,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Trip newTrip = Trip(
                           name: "test trip",
                         ); // TODO: Trip form
-                           // Issue URL: https://github.com/Supalien/WiseBud/issues/27
+                        // Issue URL: https://github.com/Supalien/WiseBud/issues/27
                         tripsProvider.addTrip(newTrip);
                       },
                       label: Text("New Trip"),
