@@ -230,6 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Trip newTrip = Trip(
                           name: "test trip",
                         ); // TODO: Trip form
+                           // Issue URL: https://github.com/Supalien/WiseBud/issues/27
                         tripsProvider.addTrip(newTrip);
                         newTrip.id = await database
                             .into(database.tripItems)

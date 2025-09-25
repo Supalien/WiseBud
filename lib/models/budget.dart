@@ -9,6 +9,7 @@ class Budget {
   int amount;
   int
   periodDays; // TODO: need to figure out how to proccess monthly budgets when months have dynamic lengths. (maybe average of months length in the period of the trip?)
+              // Issue URL: https://github.com/Supalien/WiseBud/issues/28
 
   Trip? trip;
 
