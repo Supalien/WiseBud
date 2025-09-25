@@ -198,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: TabBarView(children: [TripTab(), BudgetTab(), Text('Auth tab')]),
+      body: TabBarView(children: [TripTab(), BudgetTab(), Text('Settings tab')]),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _newExpense(context),
         tooltip: 'Increment',
@@ -208,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tabs: [
           Tab(icon: Icon(Icons.home_filled)),
           Tab(icon: Icon(Icons.monetization_on)),
-          Tab(icon: Icon(Icons.account_circle)),
+          Tab(icon: Icon(Icons.settings)),
         ],
       ),
       drawer: Drawer(
