@@ -160,7 +160,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // This method is rerun every time setState is called,
 
     TripsProvider tripsProvider = context.watch<TripsProvider>();
-    AppDatabase database = context.read<AppDatabase>();
 
     if (tripsProvider.isLoading) {
       return CircularProgressIndicator(); // FIXME: this is ugly
@@ -171,10 +170,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                       // Issue URL: https://github.com/Supalien/WiseBud/issues/19
       Trip firstTrip = Trip(name: "My first trip");
       tripsProvider.addFirst(firstTrip);
-      database
-          .into(database.tripItems)
-          .insert(firstTrip.toCompanion())
-          .then((id) => firstTrip.id = id);
     }
 
     return Scaffold(
@@ -188,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: const Text('test button'),
             onPressed: () async {
               Stopwatch stopwatch = Stopwatch()..start();
-              var db = database;
+              var db = context.read<AppDatabase>();
               dumpTrip(db, fakeTrip);
               dumpTrip(db, fakeTrip2);
               stopwatch.stop();
@@ -232,9 +227,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         ); // TODO: Trip form
                            // Issue URL: https://github.com/Supalien/WiseBud/issues/27
                         tripsProvider.addTrip(newTrip);
-                        newTrip.id = await database
-                            .into(database.tripItems)
-                            .insert(newTrip.toCompanion());
                       },
                       label: Text("New Trip"),
                       icon: Icon(Icons.add_circle_sharp),

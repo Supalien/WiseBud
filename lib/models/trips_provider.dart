@@ -16,7 +16,7 @@ class TripsProvider with ChangeNotifier {
   int get index => _index;
   Trip? get trip => _index != -1 ? _trips.elementAtOrNull(_index) : null;
 
-  TripsProvider(this.db){
+  TripsProvider(this.db) {
     loadAll();
   }
   Future<void> loadAll() async {
@@ -38,9 +38,11 @@ class TripsProvider with ChangeNotifier {
     }
   }
 
-  void addFirst(Trip t){
+  void addFirst(Trip t) {
     _trips.add(t);
     _index = 0;
+    // insert the trip to db and set it with the id given by db
+    db.into(db.tripItems).insert(t.toCompanion()).then((id) => t.id = id);
   }
 
   void addTrip(Trip t) {
@@ -48,6 +50,8 @@ class TripsProvider with ChangeNotifier {
     if (_index == -1) {
       _index = 0;
     }
+    // insert the trip to db and set it with the id given by db
+    db.into(db.tripItems).insert(t.toCompanion()).then((id) => t.id = id);
     notifyListeners();
   }
 
@@ -85,6 +89,8 @@ class TripsProvider with ChangeNotifier {
 
   void addBudget(Budget b) {
     trip!.addBudget(b);
+    // insert budget to db and set budget id to id given by db
+    db.into(db.budgetItems).insert(b.toCompanion()).then((id) => b.id = id);
     notifyListeners();
   }
 

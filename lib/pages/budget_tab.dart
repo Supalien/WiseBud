@@ -55,17 +55,12 @@ class _BudgetTabState extends State<BudgetTab> {
 
     if (!context.mounted) return; // widget doesnt exist
     if (result == null) return; // back button
-    AppDatabase db = context.read<AppDatabase>();
     Budget newBudget = Budget(
       name: result.name,
       amount: result.amount,
       desc: result.desc,
     );
     context.read<TripsProvider>().addBudget(newBudget);
-    db
-        .into(db.budgetItems)
-        .insert(newBudget.toCompanion())
-        .then((id) => newBudget.id = id);
   }
 }
 
