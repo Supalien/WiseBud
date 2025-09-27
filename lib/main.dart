@@ -20,7 +20,7 @@ Future<void> main() async {
           dispose: (context, db) => db.close(),
         ),
         ChangeNotifierProvider<TripsProvider>(
-          create: (context) => TripsProvider(context.read<AppDatabase>()),
+          create: (context) => TripsProvider(context.read<AppDatabase>(), currentTripId: 6),
         ),
         ProxyProvider<TripsProvider, Trip?>(
           update: (context, tripsProvider, previousTrip) => tripsProvider.trip,
@@ -172,6 +172,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // Issue URL: https://github.com/Supalien/WiseBud/issues/19
       Trip firstTrip = Trip(name: "My first trip");
       tripsProvider.addFirst(firstTrip);
+      return Material(
+        child: Center(child: CircularProgressIndicator()),
+      );
     }
 
     return Scaffold(
@@ -184,13 +187,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ElevatedButton(
             child: const Text('test button'),
             onPressed: () async {
-              Stopwatch stopwatch = Stopwatch()..start();
+              // Stopwatch stopwatch = Stopwatch()..start();
               var db = context.read<AppDatabase>();
-              dumpTrip(db, fakeTrip);
-              dumpTrip(db, fakeTrip2);
-              stopwatch.stop();
-              print(stopwatch.elapsed.toString());
-              tripsProvider.loadAll();
+              // dumpTrip(db, fakeTrip);
+              // dumpTrip(db, fakeTrip2);
+              // stopwatch.stop();
+              // print(stopwatch.elapsed.toString());
+              // tripsProvider.loadAll();
             },
           ),
         ],
@@ -241,16 +244,23 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Expanded(
               child: ListView(
-                children: List<Widget>.from(
-                  tripsProvider.trips.map(
-                    (t) => TextButton(
+                children: List<Widget>.from(tripsProvider.trips.entries.map((entry) => TextButton(
                       onPressed: () {
-                        tripsProvider.select(t);
+                        tripsProvider.select(entry.key);
                         Navigator.pop(context); // close drawer
                       },
-                      child: Text("Name: ${t.name}"),
-                    ),
-                  ),
+                      child: Text("Name: ${entry.value.name}"),
+                    ),),
+                // children: List<Widget>.from(
+                //   tripsProvider.trips.map(
+                    // (t) => TextButton(
+                    //   onPressed: () {
+                    //     tripsProvider.select(t);
+                    //     Navigator.pop(context); // close drawer
+                    //   },
+                    //   child: Text("Name: ${t.name}"),
+                    // ),
+                //   ),
                 ),
               ),
             ),
@@ -262,25 +272,21 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 Future<void> _newExpense(BuildContext context) async {
-  final result = await Navigator.push(
+  final result = await Navigator.push<ExpenseResult>(
     context,
     MaterialPageRoute(builder: (context) => NewExpenseScreen()),
   );
 
   if (!context.mounted) return; // widget doesnt exist
   if (result == null) return; // result of back button
-  AppDatabase db = context.read<AppDatabase>();
+
   Expense newExpense = Expense(
     amount: result.amount,
-    desc: result.desc,
-    currency: result.currency,
     time: result.time,
   );
+  newExpense.desc = result.desc ?? newExpense.desc;
+  newExpense.currency = result.currency ?? newExpense.currency;
   context.read<TripsProvider>().addExpense(newExpense, result.budget);
-  db
-      .into(db.expenseItems)
-      .insert(newExpense.toCompanion())
-      .then((id) => newExpense.id = id);
 }
 
 extension ContextExtension on BuildContext {

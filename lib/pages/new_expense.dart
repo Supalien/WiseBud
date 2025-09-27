@@ -10,6 +10,8 @@ class NewExpenseScreen extends StatefulWidget {
   State<NewExpenseScreen> createState() => _NewExpenseScreenState();
 }
 
+typedef ExpenseResult = ({double amount, Budget? budget, String? currency, String? desc, DateTime time});
+
 class _NewExpenseScreenState extends State<NewExpenseScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   double amount = 0;
@@ -66,7 +68,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
             ElevatedButton(onPressed: () {
               if (_formKey.currentState!.validate()){
                 _formKey.currentState!.save();
-                Navigator.pop(context, (amount: amount, desc: desc, budget: budget, currency: currency, time: DateTime.now()));
+                Navigator.pop<ExpenseResult>(context, (amount: amount, desc: desc, budget: budget, currency: currency, time: DateTime.now()));
               }
             }, child: Text("Submit")),
           ],

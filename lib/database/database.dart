@@ -60,7 +60,7 @@ class AppDatabase extends _$AppDatabase {
     // load every budget of trip and add it to trip
     for (BudgetItem budgetItem in tripBudgetItems) {
       Budget b = Budget.fromItem(budgetItem);
-      final budgetExpenseItems = await managers.expenseItems.filter((f) => f.budgetId.id(id)).get(); // all expenses of budget
+      final budgetExpenseItems = await managers.expenseItems.filter((f) => f.tripId.id(id) & f.budgetId.id(b.id)).get(); // all expenses that reference both the trip and iterated budget
       // add expensed to Budget
       for (ExpenseItem expenseItem in budgetExpenseItems) {
         b.addExpense(Expense.fromItem(expenseItem));
@@ -72,6 +72,10 @@ class AppDatabase extends _$AppDatabase {
       t.addExpense(Expense.fromItem(expenseItem));
     }
     return t;
+  }
+
+  Future<Trip> lazyLoadTripById(int id) async {
+    return Trip.fromItem(await managers.tripItems.filter((f) => f.id(id)).getSingle());
   }
 }
 

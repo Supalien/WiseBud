@@ -8,84 +8,97 @@ import 'package:wisebud/models/trip.dart';
 // Issue URL: https://github.com/Supalien/WiseBud/issues/29
 class TripsProvider with ChangeNotifier {
   AppDatabase db;
-  final List<Trip> _trips = [];
-  int _index = -1;
+  final Map<int, Trip> _trips = {}; // map id to trip
+  int _currentTripId = -1;
   bool isLoading = true;
 
-  List<Trip> get trips => _trips;
-  int get index => _index;
-  Trip? get trip => _index != -1 ? _trips.elementAtOrNull(_index) : null;
+  Map<int, Trip> get trips => _trips;
+  Trip? get trip => _trips[_currentTripId];
 
-  TripsProvider(this.db) {
+  TripsProvider(this.db, {int? currentTripId}) {
+    if (currentTripId != null && currentTripId >= 0 && _trips.containsKey(currentTripId)) {
+      _currentTripId = currentTripId;
+    }
     loadAll();
   }
-  Future<void> loadAll() async {
+
+  void loadTrip(int id) async {
+    _trips[id] = await db.loadTripById(id);
+  }
+
+  void loadAll() async {
     _trips.clear();
     for (var t in await db.select(db.tripItems).get()) {
-      _trips.add(await db.loadTripById(t.id));
-    }
-    if (_index == -1) {
-      _index = 0;
+      if (t.id == _currentTripId) {
+        _trips[t.id] = await db.loadTripById(t.id);
+      }
+      else {
+      _trips[t.id] = await db.lazyLoadTripById(t.id);
+      }
     }
     isLoading = false;
     notifyListeners();
   }
 
-  TripsProvider.from(this.db, List<Trip> trips) {
-    _trips.addAll(trips);
-    if (_trips.isNotEmpty) {
-      _index = 0;
-    }
+  // TripsProvider.from(this.db, List<Trip> trips) {
+  //   _trips.addAll(trips);
+  //   if (_trips.isNotEmpty) {
+  //     _currentTripId = 0;
+  //   }
+  // }
+
+  // sets the current Trip
+  void select(int id) {
+    loadTrip(id);
+    _currentTripId = id;
+    notifyListeners();
   }
 
   void addFirst(Trip t) {
-    _trips.add(t);
-    _index = 0;
     // insert the trip to db and set it with the id given by db
-    db.into(db.tripItems).insert(t.toCompanion()).then((id) => t.id = id);
+    db.into(db.tripItems).insert(t.toCompanion()).then((id) { 
+      t.id = id;
+      _trips[id] = t;
+      _currentTripId = id;
+      notifyListeners();
+    });
   }
 
   void addTrip(Trip t) {
-    _trips.add(t);
-    if (_index == -1) {
-      _index = 0;
-    }
     // insert the trip to db and set it with the id given by db
-    db.into(db.tripItems).insert(t.toCompanion()).then((id) => t.id = id);
+    db.into(db.tripItems).insert(t.toCompanion()).then((id) { 
+      t.id = id;
+      _trips[id] = t;
+    });
     notifyListeners();
   }
 
-  void addTrips(List<Trip> ts) {
-    _trips.addAll(ts);
-    if (_index == -1 && _trips.isNotEmpty) {
-      _index = 0;
-    }
-    notifyListeners();
-  }
+  // void addTrips(List<Trip> ts) {
+  //   _trips.addAll(ts);
+  //   if (_currentTripId == -1 && _trips.isNotEmpty) {
+  //     _currentTripId = 0;
+  //   }
+  //   notifyListeners();
+  // }
 
-  void removeTripAt(int i) {
-    _trips.removeAt(i);
-    if (_trips.isEmpty) {
-      _index = -1;
-    }
-    if (i < _index) {
-      _index--;
-    }
-    if (i == _index) {
-      _index = 0;
-    }
-    notifyListeners();
-  }
+  // void removeTripAt(int i) {
+  //   _trips.removeAt(i);
+  //   if (_trips.isEmpty) {
+  //     _currentTripId = -1;
+  //   }
+  //   if (i < _currentTripId) {
+  //     _currentTripId--;
+  //   }
+  //   if (i == _currentTripId) {
+  //     _currentTripId = 0;
+  //   }
+  //   notifyListeners();
+  // }
 
-  void removeTrip(Trip t) {
-    removeTripAt(_trips.indexOf(t));
-  }
+  // void removeTrip(Trip t) {
+  //   removeTripAt(_trips.indexOf(t));
+  // }
 
-  // sets the current Trip
-  void select(Trip t) {
-    _index = _trips.indexOf(t);
-    notifyListeners();
-  }
 
   void addBudget(Budget b) {
     trip!.addBudget(b);
@@ -99,6 +112,7 @@ class TripsProvider with ChangeNotifier {
     if (b != null) {
       b.addExpense(ex);
     }
+    db.into(db.expenseItems).insert(ex.toCompanion()).then((id) => ex.id = id);
     notifyListeners();
   }
 }
