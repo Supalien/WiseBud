@@ -4,8 +4,6 @@ import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
 
-// TODO: find a way to only load one trip at a time
-// Issue URL: https://github.com/Supalien/WiseBud/issues/29
 class TripsProvider with ChangeNotifier {
   AppDatabase db;
   final Map<int, Trip> _trips = {}; // map id to trip
