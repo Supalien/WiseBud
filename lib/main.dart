@@ -6,6 +6,7 @@ import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/models/trips_provider.dart';
 import 'package:wisebud/pages/budget_tab.dart';
 import 'package:wisebud/pages/new_expense.dart';
+import 'package:wisebud/pages/new_trip.dart';
 import 'package:wisebud/pages/trip_tab.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,8 @@ Future<void> main() async {
           dispose: (context, db) => db.close(),
         ),
         ChangeNotifierProvider<TripsProvider>(
-          create: (context) => TripsProvider(context.read<AppDatabase>(), currentTripId: 6),
+          create: (context) =>
+              TripsProvider(context.read<AppDatabase>(), currentTripId: 6),
         ),
         ProxyProvider<TripsProvider, Trip?>(
           update: (context, tripsProvider, previousTrip) => tripsProvider.trip,
@@ -162,9 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
     TripsProvider tripsProvider = context.watch<TripsProvider>();
 
     if (tripsProvider.isLoading) {
-      return Material(
-        child: Center(child: CircularProgressIndicator()),
-      );
+      return Material(child: Center(child: CircularProgressIndicator()));
     }
 
     if (tripsProvider.trip == null) {
@@ -172,9 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Issue URL: https://github.com/Supalien/WiseBud/issues/19
       Trip firstTrip = Trip(name: "My first trip");
       tripsProvider.addFirst(firstTrip);
-      return Material(
-        child: Center(child: CircularProgressIndicator()),
-      );
+      return Material(child: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -189,11 +187,11 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () async {
               // Stopwatch stopwatch = Stopwatch()..start();
               var db = context.read<AppDatabase>();
-              // dumpTrip(db, fakeTrip);
-              // dumpTrip(db, fakeTrip2);
+              dumpTrip(db, fakeTrip);
+              dumpTrip(db, fakeTrip2);
               // stopwatch.stop();
               // print(stopwatch.elapsed.toString());
-              // tripsProvider.loadAll();
+              tripsProvider.loadAll();
             },
           ),
         ],
@@ -228,12 +226,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text("Trips", textScaler: TextScaler.linear(1.5)),
                     ),
                     TextButton.icon(
-                      onPressed: () async {
-                        Trip newTrip = Trip(
-                          name: "test trip",
-                        ); // TODO: Trip form
-                        // Issue URL: https://github.com/Supalien/WiseBud/issues/27
-                        tripsProvider.addTrip(newTrip);
+                      onPressed: () {
+                        _newTrip(context);
                       },
                       label: Text("New Trip"),
                       icon: Icon(Icons.add_circle_sharp),
@@ -244,23 +238,26 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Expanded(
               child: ListView(
-                children: List<Widget>.from(tripsProvider.trips.entries.map((entry) => TextButton(
+                children: List<Widget>.from(
+                  tripsProvider.trips.entries.map(
+                    (entry) => TextButton(
                       onPressed: () {
                         tripsProvider.select(entry.key);
                         Navigator.pop(context); // close drawer
                       },
                       child: Text("Name: ${entry.value.name}"),
-                    ),),
-                // children: List<Widget>.from(
-                //   tripsProvider.trips.map(
-                    // (t) => TextButton(
-                    //   onPressed: () {
-                    //     tripsProvider.select(t);
-                    //     Navigator.pop(context); // close drawer
-                    //   },
-                    //   child: Text("Name: ${t.name}"),
-                    // ),
-                //   ),
+                    ),
+                  ),
+                  // children: List<Widget>.from(
+                  //   tripsProvider.trips.map(
+                  // (t) => TextButton(
+                  //   onPressed: () {
+                  //     tripsProvider.select(t);
+                  //     Navigator.pop(context); // close drawer
+                  //   },
+                  //   child: Text("Name: ${t.name}"),
+                  // ),
+                  //   ),
                 ),
               ),
             ),
@@ -271,7 +268,25 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Future<void> _newExpense(BuildContext context) async {
+void _newTrip(BuildContext context) async {
+  TripsProvider tp = context.read<TripsProvider>();
+  final result = await Navigator.push<TripResult>(
+    context,
+    MaterialPageRoute(builder: (context) => NewTripScreen()),
+  );
+
+  if (!context.mounted) return;
+  if (result == null) return;
+
+  Trip newTrip = Trip(name: result.name, destinations: result.destinations);
+  newTrip.startDate = result.startDate ?? newTrip.startDate;
+  newTrip.endDate = result.endDate ?? newTrip.endDate;
+  newTrip.defaultCurrency = result.defaultCurrency ?? newTrip.defaultCurrency;
+
+  tp.addTrip(newTrip).then((id) => tp.select(id));
+}
+
+void _newExpense(BuildContext context) async {
   final result = await Navigator.push<ExpenseResult>(
     context,
     MaterialPageRoute(builder: (context) => NewExpenseScreen()),
@@ -280,10 +295,7 @@ Future<void> _newExpense(BuildContext context) async {
   if (!context.mounted) return; // widget doesnt exist
   if (result == null) return; // result of back button
 
-  Expense newExpense = Expense(
-    amount: result.amount,
-    time: result.time,
-  );
+  Expense newExpense = Expense(amount: result.amount, time: result.time);
   newExpense.desc = result.desc ?? newExpense.desc;
   newExpense.currency = result.currency ?? newExpense.currency;
   context.read<TripsProvider>().addExpense(newExpense, result.budget);

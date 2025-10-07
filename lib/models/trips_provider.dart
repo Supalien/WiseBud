@@ -20,8 +20,10 @@ class TripsProvider with ChangeNotifier {
     loadAll();
   }
 
-  void loadTrip(int id) async {
-    _trips[id] = await db.loadTripById(id);
+  Future<Trip> loadTrip(int id) async {
+    Trip t =  await db.loadTripById(id);
+    _trips[id] = t;
+    return t;
   }
 
   void loadAll() async {
@@ -47,9 +49,10 @@ class TripsProvider with ChangeNotifier {
 
   // sets the current Trip
   void select(int id) {
-    loadTrip(id);
+    loadTrip(id).then((_){
     _currentTripId = id;
     notifyListeners();
+    });
   }
 
   void addFirst(Trip t) {
@@ -62,13 +65,14 @@ class TripsProvider with ChangeNotifier {
     });
   }
 
-  void addTrip(Trip t) {
+  Future<int> addTrip(Trip t) {
     // insert the trip to db and set it with the id given by db
-    db.into(db.tripItems).insert(t.toCompanion()).then((id) { 
+    return db.into(db.tripItems).insert(t.toCompanion()).then((id) { 
       t.id = id;
       _trips[id] = t;
+      notifyListeners();
+      return id;
     });
-    notifyListeners();
   }
 
   // void addTrips(List<Trip> ts) {
