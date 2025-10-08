@@ -7,6 +7,7 @@ String formatDouble(double n) {
 bool isInThisMonth(DateTime d) {
   // var now = DateTime(2030, 1, 5); // for testing
   // FIXME: ABOVE LINE FOR TESTING PURPOSES ONLY! REPLACE LATER WITH BELOW LINE!
+  // Issue URL: https://github.com/Supalien/WiseBud/issues/31
   var now = DateTime.now();
   var start = DateTime(now.year, now.month);
   var end = DateTime(now.year, now.month + 1).subtract(Duration(days: 1));
