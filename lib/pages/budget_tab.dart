@@ -47,7 +47,7 @@ class _BudgetTabState extends State<BudgetTab> {
   }
 
   Future<void> _newBudget(BuildContext context) async {
-    final result = await Navigator.push(
+    final result = await Navigator.push<BudgetResult>(
       context,
       MaterialPageRoute(builder: (context) => NewBudgetScreen()),
     );
@@ -58,7 +58,11 @@ class _BudgetTabState extends State<BudgetTab> {
       name: result.name,
       amount: result.amount,
       desc: result.desc,
+      period: result.period,
     );
+    if (result.period == Period.custom) {
+      newBudget.customPeriod = result.customPeriod;
+    }
     context.read<TripsProvider>().addBudget(newBudget);
   }
 }

@@ -522,16 +522,25 @@ class $BudgetItemsTable extends BudgetItems
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _periodDaysMeta = const VerificationMeta(
-    'periodDays',
+  @override
+  late final GeneratedColumnWithTypeConverter<Period, String> period =
+      GeneratedColumn<String>(
+        'period',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<Period>($BudgetItemsTable.$converterperiod);
+  static const VerificationMeta _customPeriodMeta = const VerificationMeta(
+    'customPeriod',
   );
   @override
-  late final GeneratedColumn<int> periodDays = GeneratedColumn<int>(
-    'period_days',
+  late final GeneratedColumn<int> customPeriod = GeneratedColumn<int>(
+    'custom_period',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _tripIdMeta = const VerificationMeta('tripId');
   @override
@@ -552,7 +561,8 @@ class $BudgetItemsTable extends BudgetItems
     name,
     desc,
     amount,
-    periodDays,
+    period,
+    customPeriod,
     tripId,
   ];
   @override
@@ -598,13 +608,14 @@ class $BudgetItemsTable extends BudgetItems
     } else if (isInserting) {
       context.missing(_amountMeta);
     }
-    if (data.containsKey('period_days')) {
+    if (data.containsKey('custom_period')) {
       context.handle(
-        _periodDaysMeta,
-        periodDays.isAcceptableOrUnknown(data['period_days']!, _periodDaysMeta),
+        _customPeriodMeta,
+        customPeriod.isAcceptableOrUnknown(
+          data['custom_period']!,
+          _customPeriodMeta,
+        ),
       );
-    } else if (isInserting) {
-      context.missing(_periodDaysMeta);
     }
     if (data.containsKey('trip_id')) {
       context.handle(
@@ -641,10 +652,16 @@ class $BudgetItemsTable extends BudgetItems
         DriftSqlType.int,
         data['${effectivePrefix}amount'],
       )!,
-      periodDays: attachedDatabase.typeMapping.read(
+      period: $BudgetItemsTable.$converterperiod.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}period'],
+        )!,
+      ),
+      customPeriod: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}period_days'],
-      )!,
+        data['${effectivePrefix}custom_period'],
+      ),
       tripId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}trip_id'],
@@ -656,6 +673,9 @@ class $BudgetItemsTable extends BudgetItems
   $BudgetItemsTable createAlias(String alias) {
     return $BudgetItemsTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<Period, String, String> $converterperiod =
+      const EnumNameConverter<Period>(Period.values);
 }
 
 class BudgetItem extends DataClass implements Insertable<BudgetItem> {
@@ -664,7 +684,8 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
   final String name;
   final String? desc;
   final int amount;
-  final int periodDays;
+  final Period period;
+  final int? customPeriod;
   final int? tripId;
   const BudgetItem({
     required this.id,
@@ -672,7 +693,8 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
     required this.name,
     this.desc,
     required this.amount,
-    required this.periodDays,
+    required this.period,
+    this.customPeriod,
     this.tripId,
   });
   @override
@@ -685,7 +707,14 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
       map['desc'] = Variable<String>(desc);
     }
     map['amount'] = Variable<int>(amount);
-    map['period_days'] = Variable<int>(periodDays);
+    {
+      map['period'] = Variable<String>(
+        $BudgetItemsTable.$converterperiod.toSql(period),
+      );
+    }
+    if (!nullToAbsent || customPeriod != null) {
+      map['custom_period'] = Variable<int>(customPeriod);
+    }
     if (!nullToAbsent || tripId != null) {
       map['trip_id'] = Variable<int>(tripId);
     }
@@ -699,7 +728,10 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
       name: Value(name),
       desc: desc == null && nullToAbsent ? const Value.absent() : Value(desc),
       amount: Value(amount),
-      periodDays: Value(periodDays),
+      period: Value(period),
+      customPeriod: customPeriod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(customPeriod),
       tripId: tripId == null && nullToAbsent
           ? const Value.absent()
           : Value(tripId),
@@ -717,7 +749,10 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
       name: serializer.fromJson<String>(json['name']),
       desc: serializer.fromJson<String?>(json['desc']),
       amount: serializer.fromJson<int>(json['amount']),
-      periodDays: serializer.fromJson<int>(json['periodDays']),
+      period: $BudgetItemsTable.$converterperiod.fromJson(
+        serializer.fromJson<String>(json['period']),
+      ),
+      customPeriod: serializer.fromJson<int?>(json['customPeriod']),
       tripId: serializer.fromJson<int?>(json['tripId']),
     );
   }
@@ -730,7 +765,10 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
       'name': serializer.toJson<String>(name),
       'desc': serializer.toJson<String?>(desc),
       'amount': serializer.toJson<int>(amount),
-      'periodDays': serializer.toJson<int>(periodDays),
+      'period': serializer.toJson<String>(
+        $BudgetItemsTable.$converterperiod.toJson(period),
+      ),
+      'customPeriod': serializer.toJson<int?>(customPeriod),
       'tripId': serializer.toJson<int?>(tripId),
     };
   }
@@ -741,7 +779,8 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
     String? name,
     Value<String?> desc = const Value.absent(),
     int? amount,
-    int? periodDays,
+    Period? period,
+    Value<int?> customPeriod = const Value.absent(),
     Value<int?> tripId = const Value.absent(),
   }) => BudgetItem(
     id: id ?? this.id,
@@ -749,7 +788,8 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
     name: name ?? this.name,
     desc: desc.present ? desc.value : this.desc,
     amount: amount ?? this.amount,
-    periodDays: periodDays ?? this.periodDays,
+    period: period ?? this.period,
+    customPeriod: customPeriod.present ? customPeriod.value : this.customPeriod,
     tripId: tripId.present ? tripId.value : this.tripId,
   );
   BudgetItem copyWithCompanion(BudgetItemsCompanion data) {
@@ -759,9 +799,10 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
       name: data.name.present ? data.name.value : this.name,
       desc: data.desc.present ? data.desc.value : this.desc,
       amount: data.amount.present ? data.amount.value : this.amount,
-      periodDays: data.periodDays.present
-          ? data.periodDays.value
-          : this.periodDays,
+      period: data.period.present ? data.period.value : this.period,
+      customPeriod: data.customPeriod.present
+          ? data.customPeriod.value
+          : this.customPeriod,
       tripId: data.tripId.present ? data.tripId.value : this.tripId,
     );
   }
@@ -774,15 +815,24 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
           ..write('name: $name, ')
           ..write('desc: $desc, ')
           ..write('amount: $amount, ')
-          ..write('periodDays: $periodDays, ')
+          ..write('period: $period, ')
+          ..write('customPeriod: $customPeriod, ')
           ..write('tripId: $tripId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, createdAt, name, desc, amount, periodDays, tripId);
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    name,
+    desc,
+    amount,
+    period,
+    customPeriod,
+    tripId,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -792,7 +842,8 @@ class BudgetItem extends DataClass implements Insertable<BudgetItem> {
           other.name == this.name &&
           other.desc == this.desc &&
           other.amount == this.amount &&
-          other.periodDays == this.periodDays &&
+          other.period == this.period &&
+          other.customPeriod == this.customPeriod &&
           other.tripId == this.tripId);
 }
 
@@ -802,7 +853,8 @@ class BudgetItemsCompanion extends UpdateCompanion<BudgetItem> {
   final Value<String> name;
   final Value<String?> desc;
   final Value<int> amount;
-  final Value<int> periodDays;
+  final Value<Period> period;
+  final Value<int?> customPeriod;
   final Value<int?> tripId;
   const BudgetItemsCompanion({
     this.id = const Value.absent(),
@@ -810,7 +862,8 @@ class BudgetItemsCompanion extends UpdateCompanion<BudgetItem> {
     this.name = const Value.absent(),
     this.desc = const Value.absent(),
     this.amount = const Value.absent(),
-    this.periodDays = const Value.absent(),
+    this.period = const Value.absent(),
+    this.customPeriod = const Value.absent(),
     this.tripId = const Value.absent(),
   });
   BudgetItemsCompanion.insert({
@@ -819,18 +872,20 @@ class BudgetItemsCompanion extends UpdateCompanion<BudgetItem> {
     required String name,
     this.desc = const Value.absent(),
     required int amount,
-    required int periodDays,
+    required Period period,
+    this.customPeriod = const Value.absent(),
     this.tripId = const Value.absent(),
   }) : name = Value(name),
        amount = Value(amount),
-       periodDays = Value(periodDays);
+       period = Value(period);
   static Insertable<BudgetItem> custom({
     Expression<int>? id,
     Expression<DateTime>? createdAt,
     Expression<String>? name,
     Expression<String>? desc,
     Expression<int>? amount,
-    Expression<int>? periodDays,
+    Expression<String>? period,
+    Expression<int>? customPeriod,
     Expression<int>? tripId,
   }) {
     return RawValuesInsertable({
@@ -839,7 +894,8 @@ class BudgetItemsCompanion extends UpdateCompanion<BudgetItem> {
       if (name != null) 'name': name,
       if (desc != null) 'desc': desc,
       if (amount != null) 'amount': amount,
-      if (periodDays != null) 'period_days': periodDays,
+      if (period != null) 'period': period,
+      if (customPeriod != null) 'custom_period': customPeriod,
       if (tripId != null) 'trip_id': tripId,
     });
   }
@@ -850,7 +906,8 @@ class BudgetItemsCompanion extends UpdateCompanion<BudgetItem> {
     Value<String>? name,
     Value<String?>? desc,
     Value<int>? amount,
-    Value<int>? periodDays,
+    Value<Period>? period,
+    Value<int?>? customPeriod,
     Value<int?>? tripId,
   }) {
     return BudgetItemsCompanion(
@@ -859,7 +916,8 @@ class BudgetItemsCompanion extends UpdateCompanion<BudgetItem> {
       name: name ?? this.name,
       desc: desc ?? this.desc,
       amount: amount ?? this.amount,
-      periodDays: periodDays ?? this.periodDays,
+      period: period ?? this.period,
+      customPeriod: customPeriod ?? this.customPeriod,
       tripId: tripId ?? this.tripId,
     );
   }
@@ -882,8 +940,13 @@ class BudgetItemsCompanion extends UpdateCompanion<BudgetItem> {
     if (amount.present) {
       map['amount'] = Variable<int>(amount.value);
     }
-    if (periodDays.present) {
-      map['period_days'] = Variable<int>(periodDays.value);
+    if (period.present) {
+      map['period'] = Variable<String>(
+        $BudgetItemsTable.$converterperiod.toSql(period.value),
+      );
+    }
+    if (customPeriod.present) {
+      map['custom_period'] = Variable<int>(customPeriod.value);
     }
     if (tripId.present) {
       map['trip_id'] = Variable<int>(tripId.value);
@@ -899,7 +962,8 @@ class BudgetItemsCompanion extends UpdateCompanion<BudgetItem> {
           ..write('name: $name, ')
           ..write('desc: $desc, ')
           ..write('amount: $amount, ')
-          ..write('periodDays: $periodDays, ')
+          ..write('period: $period, ')
+          ..write('customPeriod: $customPeriod, ')
           ..write('tripId: $tripId')
           ..write(')'))
         .toString();
@@ -1864,7 +1928,8 @@ typedef $$BudgetItemsTableCreateCompanionBuilder =
       required String name,
       Value<String?> desc,
       required int amount,
-      required int periodDays,
+      required Period period,
+      Value<int?> customPeriod,
       Value<int?> tripId,
     });
 typedef $$BudgetItemsTableUpdateCompanionBuilder =
@@ -1874,7 +1939,8 @@ typedef $$BudgetItemsTableUpdateCompanionBuilder =
       Value<String> name,
       Value<String?> desc,
       Value<int> amount,
-      Value<int> periodDays,
+      Value<Period> period,
+      Value<int?> customPeriod,
       Value<int?> tripId,
     });
 
@@ -1957,8 +2023,14 @@ class $$BudgetItemsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get periodDays => $composableBuilder(
-    column: $table.periodDays,
+  ColumnWithTypeConverterFilters<Period, Period, String> get period =>
+      $composableBuilder(
+        column: $table.period,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get customPeriod => $composableBuilder(
+    column: $table.customPeriod,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2045,8 +2117,13 @@ class $$BudgetItemsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get periodDays => $composableBuilder(
-    column: $table.periodDays,
+  ColumnOrderings<String> get period => $composableBuilder(
+    column: $table.period,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get customPeriod => $composableBuilder(
+    column: $table.customPeriod,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2098,8 +2175,11 @@ class $$BudgetItemsTableAnnotationComposer
   GeneratedColumn<int> get amount =>
       $composableBuilder(column: $table.amount, builder: (column) => column);
 
-  GeneratedColumn<int> get periodDays => $composableBuilder(
-    column: $table.periodDays,
+  GeneratedColumnWithTypeConverter<Period, String> get period =>
+      $composableBuilder(column: $table.period, builder: (column) => column);
+
+  GeneratedColumn<int> get customPeriod => $composableBuilder(
+    column: $table.customPeriod,
     builder: (column) => column,
   );
 
@@ -2185,7 +2265,8 @@ class $$BudgetItemsTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<String?> desc = const Value.absent(),
                 Value<int> amount = const Value.absent(),
-                Value<int> periodDays = const Value.absent(),
+                Value<Period> period = const Value.absent(),
+                Value<int?> customPeriod = const Value.absent(),
                 Value<int?> tripId = const Value.absent(),
               }) => BudgetItemsCompanion(
                 id: id,
@@ -2193,7 +2274,8 @@ class $$BudgetItemsTableTableManager
                 name: name,
                 desc: desc,
                 amount: amount,
-                periodDays: periodDays,
+                period: period,
+                customPeriod: customPeriod,
                 tripId: tripId,
               ),
           createCompanionCallback:
@@ -2203,7 +2285,8 @@ class $$BudgetItemsTableTableManager
                 required String name,
                 Value<String?> desc = const Value.absent(),
                 required int amount,
-                required int periodDays,
+                required Period period,
+                Value<int?> customPeriod = const Value.absent(),
                 Value<int?> tripId = const Value.absent(),
               }) => BudgetItemsCompanion.insert(
                 id: id,
@@ -2211,7 +2294,8 @@ class $$BudgetItemsTableTableManager
                 name: name,
                 desc: desc,
                 amount: amount,
-                periodDays: periodDays,
+                period: period,
+                customPeriod: customPeriod,
                 tripId: tripId,
               ),
           withReferenceMapper: (p0) => p0

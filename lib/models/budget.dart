@@ -1,15 +1,16 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 import 'package:wisebud/database/database.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
+import 'package:wisebud/utils.dart';
 
 class Budget {
   String name;
   String? desc;
   int amount;
-  int
-  periodDays; // TODO: need to figure out how to proccess monthly budgets when months have dynamic lengths. (maybe average of months length in the period of the trip?)
-              // Issue URL: https://github.com/Supalien/WiseBud/issues/28
+  Period period;
+  int? customPeriod;
 
   Trip? trip;
 
@@ -23,7 +24,8 @@ class Budget {
     required this.name,
     this.desc,
     required this.amount,
-    this.periodDays = 0,
+    this.period = Period.non,
+    this.customPeriod,
 
     this.trip,
     List<Expense>? expenses,
@@ -36,6 +38,15 @@ class Budget {
     }
   }
 
+  int get periodDays => switch (period) {
+    Period.daily => 1,
+    Period.weekly => 7,
+    Period.monthly => currentMonthLength(),
+    Period.yearly => currentYearLength(),
+    Period.custom => customPeriod ?? 0,
+    _ => 0,
+  };
+
   double get totalExpenses => expenses.fold(0, (sum, e) => sum + e.amount);
 
   void addExpense(Expense ex) {
@@ -44,7 +55,11 @@ class Budget {
     ex.budgetId = id;
   }
 
-    factory Budget.fromItem(BudgetItem item, {Trip? trip, List<Expense>? expenses}) {
+  factory Budget.fromItem(
+    BudgetItem item, {
+    Trip? trip,
+    List<Expense>? expenses,
+  }) {
     return Budget(
       id: item.id,
       createdAt: item.createdAt,
@@ -52,10 +67,10 @@ class Budget {
       name: item.name,
       desc: item.desc,
       amount: item.amount,
-      periodDays: item.periodDays,
+      period: item.period,
 
       tripId: item.tripId,
-      
+
       trip: trip,
       expenses: expenses,
     );
@@ -69,15 +84,17 @@ class Budget {
       name: name,
       desc: Value.absentIfNull(desc),
       amount: amount,
-      periodDays: periodDays,
+      period: period,
+      customPeriod: Value.absentIfNull(customPeriod),
 
       tripId: Value.absentIfNull(tripId ?? trip?.id),
     );
   }
 
   @override
-  String toString() => "Budget '$name'[${id ?? 0}] ${trip!=null ? "of $trip" : ""} - $amount";
-  
+  String toString() =>
+      "Budget '$name'[${id ?? 0}] ${trip != null ? "of $trip" : ""} - $amount";
+
   // factory Budget.fromJson(Map<String, dynamic> m) {
   //   var b = Budget(
   //     name: m['name'],
@@ -103,3 +120,5 @@ class Budget {
   //   if (tripId != null) 'tripId': tripId,
   // };
 }
+
+enum Period { non, daily, weekly, monthly, halfYearly, yearly, custom }

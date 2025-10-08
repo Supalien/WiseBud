@@ -100,7 +100,9 @@ class BudgetItems extends Table {
   TextColumn get name => text()();
   TextColumn get desc => text().nullable()();
   IntColumn get amount => integer()();
-  IntColumn get periodDays => integer()();
+  TextColumn get period => textEnum<Period>()();
+  IntColumn get customPeriod => integer().nullable()();
+
 
   IntColumn get tripId => integer().nullable().references(TripItems, #id)();
 }

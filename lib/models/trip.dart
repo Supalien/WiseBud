@@ -46,7 +46,7 @@ class Trip {
 
   double get totalBudget => budgets.fold(
     0,
-    (sum, b) => (b.periodDays == 0)
+    (sum, b) => (b.period == Period.non)
         ? sum + b.amount
         : sum + b.amount * lengthDays / b.periodDays,
   );
@@ -55,7 +55,7 @@ class Trip {
 
   double get monthlyBudget => (budgets.where(
     (b) => b.periodDays > 0,
-  )).fold(0, (sum, b) => sum + b.amount * 30 / b.periodDays);
+  )).fold(0, (sum, b) => sum + b.amount * currentMonthLength() / b.periodDays);
 
   double get monthlyExpenses => (expenses.where(
     (e) =>

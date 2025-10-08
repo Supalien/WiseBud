@@ -59,7 +59,7 @@ final Trip fakeTrip = Trip(
     Budget(
       name: 'accommodation',
       amount: 400,
-      periodDays: 30,
+      period: Period.monthly,
       expenses: [
         Expense(amount: 15, time: DateTime(2030, 1, 1, 1)),
         Expense(amount: 12, time: DateTime(2030, 1, 2)),
@@ -70,7 +70,7 @@ final Trip fakeTrip = Trip(
     Budget(
       name: 'food',
       amount: 100,
-      periodDays: 1,
+      period: Period.daily,
       expenses: [
         Expense(amount: 15, desc: 'breakfast'),
         Expense(amount: 55, desc: 'lunch'),
