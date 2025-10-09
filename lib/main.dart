@@ -9,6 +9,7 @@ import 'package:wisebud/pages/new_expense.dart';
 import 'package:wisebud/pages/new_trip.dart';
 import 'package:wisebud/pages/trip_tab.dart';
 import 'package:provider/provider.dart';
+import 'package:wisebud/widgets/trip_card.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -240,13 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListView(
                 children: List<Widget>.from(
                   tripsProvider.trips.entries.map(
-                    (entry) => TextButton(
-                      onPressed: () {
-                        tripsProvider.select(entry.key);
-                        Navigator.pop(context); // close drawer
-                      },
-                      child: Text("Name: ${entry.value.name}"),
-                    ),
+                    (entry) => TripCard(trip: entry.value, tripId: entry.key),
                   ),
                   // children: List<Widget>.from(
                   //   tripsProvider.trips.map(

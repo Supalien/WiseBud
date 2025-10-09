@@ -24,7 +24,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
   List<String> destinations = [];
   DateTime startDate = DateTime.fromMillisecondsSinceEpoch(0);
   DateTime endDate = DateTime(9999);
-  String defaultCurrency = "";
+  String defaultCurrency = "USD";
 
   @override
   Widget build(BuildContext context) {
