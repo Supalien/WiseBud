@@ -29,6 +29,8 @@ class TripsProvider with ChangeNotifier {
   void loadAll() async {
     _trips.clear();
     for (var t in await db.select(db.tripItems).get()) {
+      // if current trip id not yet set, set it to the first trip in db
+      _currentTripId = _currentTripId == -1 ? t.id : _currentTripId;
       if (t.id == _currentTripId) {
         _trips[t.id] = await db.loadTripById(t.id);
       }
