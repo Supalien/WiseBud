@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/utils.dart';
 
@@ -29,6 +30,11 @@ class TripTab extends StatelessWidget {
             ),
           ],
         ),
+        Padding(padding: EdgeInsetsGeometry.all(10)),
+        ExpensesList(
+          // the 5 latest
+          expenses: (trip.expenses.toList()..sort((a,b) => a.time.compareTo(b.time))).reversed.take(5).toList()
+        ),
       ],
     );
   }
@@ -53,28 +59,63 @@ class TripBudgetInfoWidget extends StatelessWidget {
       width: 150,
       height: 65,
       child: Material(
-        color: Theme.brightnessOf(context) == Brightness.dark? Theme.of(context).focusColor : Theme.of(context).cardColor,
+        color: Theme.brightnessOf(context) == Brightness.dark
+            ? Theme.of(context).focusColor
+            : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15),
         elevation: 10,
         shadowColor: Theme.of(context).colorScheme.shadow,
         child: InkWell(
           onTap: () {}, // TODO: do something with this
-                        // Issue URL: https://github.com/Supalien/WiseBud/issues/30
-                        // labels: enhancement
+          // Issue URL: https://github.com/Supalien/WiseBud/issues/30
+          // labels: enhancement
           borderRadius: BorderRadius.circular(15),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(title),
-                Text(
-                  "${formatDouble(amount)} / ${formatDouble(total)} $currency",
-                ),
+                Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+                Text("${formatDouble(amount)} / ${formatDouble(total)}"),
+                Text(currency),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class ExpensesList extends StatelessWidget {
+  const ExpensesList({super.key, required this.expenses});
+
+  final List<Expense> expenses;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text("Latest expenses:", style: TextStyle(fontWeight: FontWeight.bold), textScaler: TextScaler.linear(1.2),),
+        ListView.builder(
+          itemCount: expenses.length,
+          itemBuilder: (context, index) {
+            return Card(
+              child: ListTile(
+                isThreeLine: true,
+                title: Text("${expenses[index].amount} ${expenses[index].currency}"),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(expenses[index].desc),
+                    Text(expenses[index].time.toString()),
+                  ],
+                ),
+                ),
+            );
+          },
+          shrinkWrap: true,
+        ),
+      ],
     );
   }
 }

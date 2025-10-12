@@ -10,7 +10,13 @@ class NewExpenseScreen extends StatefulWidget {
   State<NewExpenseScreen> createState() => _NewExpenseScreenState();
 }
 
-typedef ExpenseResult = ({double amount, Budget? budget, String? currency, String? desc, DateTime time});
+typedef ExpenseResult = ({
+  double amount,
+  Budget? budget,
+  String? currency,
+  String? desc,
+  DateTime? time,
+});
 
 class _NewExpenseScreenState extends State<NewExpenseScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -18,11 +24,12 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
   String? desc;
   Budget? budget;
   String? currency;
+  DateTime? time;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("New Expense"),),
+      appBar: AppBar(title: Text("New Expense")),
       body: Form(
         key: _formKey,
         child: Column(
@@ -30,13 +37,16 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
           children: [
             TextFormField(
               onSaved: (newValue) => amount = double.parse(newValue!),
-              decoration: InputDecoration(hintText: "Enter amount", labelText: "Amount *"),
+              decoration: InputDecoration(
+                hintText: "Enter amount",
+                labelText: "Amount *",
+              ),
               keyboardType: TextInputType.number,
               validator: (String? value) {
-                if (value == null || value.isEmpty){
+                if (value == null || value.isEmpty) {
                   return "Please enter numbers.";
                 }
-                if (double.tryParse(value) == null){
+                if (double.tryParse(value) == null) {
                   return "Enter a real number.";
                 }
                 if (double.parse(value) <= 0) {
@@ -49,28 +59,56 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
             Divider(),
             TextFormField(
               onSaved: (newValue) => desc = newValue,
-              decoration: InputDecoration(hintText: "Enter description", labelText: "Description"),
+              decoration: InputDecoration(
+                hintText: "Enter description",
+                labelText: "Description",
+              ),
             ),
             DropdownMenu(
-              dropdownMenuEntries: List<DropdownMenuEntry>.from(context.read<Trip>().budgets.map((b) => DropdownMenuEntry(value: b, label: b.name))),
+              dropdownMenuEntries: List<DropdownMenuEntry>.from(
+                context.read<Trip>().budgets.map(
+                  (b) => DropdownMenuEntry(value: b, label: b.name),
+                ),
+              ),
               hintText: "Select Budget",
               onSelected: (value) => budget = value as Budget?,
             ),
-            TextFormField( // ADDME: makes this a dropdown to select currency from a list of real currencies
-                           // Issue URL: https://github.com/Supalien/WiseBud/issues/24
+            TextFormField(
+              // ADDME: makes this a dropdown to select currency from a list of real currencies
+              // Issue URL: https://github.com/Supalien/WiseBud/issues/24
               onSaved: (newValue) => currency = newValue,
-              decoration: InputDecoration(hintText: "Enter currency", labelText: "Currency"),
+              decoration: InputDecoration(
+                hintText: "Enter currency",
+                labelText: "Currency",
+              ),
             ),
             //ADDME: add a datetime picker to pick a time for the expense (default is the time the expense was crated)
             //Issue URL: https://github.com/Supalien/WiseBud/issues/23
+            InputDatePickerFormField(
+              firstDate: DateTime.fromMillisecondsSinceEpoch(0),
+              lastDate: DateTime(9999),
+              fieldLabelText: "Time",
+              initialDate: DateTime.now(),
+              onDateSaved: (value) => time = value,
+              acceptEmptyDate: true,
+            ),
             Divider(),
 
-            ElevatedButton(onPressed: () {
-              if (_formKey.currentState!.validate()){
-                _formKey.currentState!.save();
-                Navigator.pop<ExpenseResult>(context, (amount: amount, desc: desc, budget: budget, currency: currency, time: DateTime.now()));
-              }
-            }, child: Text("Submit")),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  Navigator.pop<ExpenseResult>(context, (
+                    amount: amount,
+                    desc: desc,
+                    budget: budget,
+                    currency: currency,
+                    time: time,
+                  ));
+                }
+              },
+              child: Text("Submit"),
+            ),
           ],
         ),
       ),

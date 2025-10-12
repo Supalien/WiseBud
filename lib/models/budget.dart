@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart';
 import 'package:wisebud/database/database.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';

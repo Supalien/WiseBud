@@ -94,7 +94,7 @@ class BudgetInfoWidget extends StatelessWidget {
               Text(
                 '${formatDouble(budget.totalExpenses)} / ${budget.amount} ${context.read<Trip>().defaultCurrency}',
               ),
-              Text("${100 * budget.totalExpenses / budget.amount}%"),
+              Text("${formatDouble(100 * budget.totalExpenses / budget.amount)}%"),
             ],
           ),
         ),

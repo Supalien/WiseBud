@@ -81,6 +81,230 @@ final Trip fakeTrip = Trip(
   ],
 );
 final Trip fakeTrip2 = Trip(name: "my second trip");
+// fake data from chatgpt:
+final List<Trip> fakeTrips = [
+  Trip(
+    name: "Mission to Nebulon-9",
+    destinations: ["Nebulon-9", "Starhaven Outpost", "The Silent Belt"],
+    startDate: DateTime(2085, 3, 15),
+    endDate: DateTime(2085, 4, 10),
+    defaultCurrency: "GALC", // Galactic Credits
+    budgets: [
+      Budget(
+        name: "Fuel & Docking",
+        desc: "For interstellar fuel, docking fees, and spaceport taxes",
+        amount: 15000,
+        period: Period.monthly,
+        customPeriod: null,
+        trip: null,
+        expenses: [
+          Expense(
+            amount: 2300.5,
+            desc: "Quantum fuel refill at Vega Station",
+            time: DateTime(2085, 3, 18, 10, 45),
+            currency: "GALC",
+            trip: null,
+            budget: null,
+          ),
+          Expense(
+            amount: 700,
+            desc: "Docking fee at Nebulon Trade Hub",
+            time: DateTime(2085, 3, 25, 9, 30),
+            currency: "GALC",
+            trip: null,
+            budget: null,
+          ),
+        ],
+      ),
+      Budget(
+        name: "Crew Meals",
+        desc: "Daily food rations and synthesized drinks for 4 crew members",
+        amount: 3000,
+        period: Period.weekly,
+        customPeriod: null,
+        trip: null,
+        expenses: [
+          Expense(
+            amount: 240.75,
+            desc: "Protein cube refill pack",
+            time: DateTime(2085, 3, 17, 12, 0),
+            currency: "GALC",
+            trip: null,
+            budget: null,
+          ),
+          Expense(
+            amount: 150.2,
+            desc: "Hydration pod replacements",
+            time: DateTime(2085, 3, 21, 15, 0),
+            currency: "GALC",
+            trip: null,
+            budget: null,
+          ),
+        ],
+      ),
+    ],
+    expenses: [
+      Expense(
+        amount: 500,
+        desc: "Custom mission patches",
+        time: DateTime(2085, 3, 10),
+        currency: "GALC",
+        trip: null,
+        budget: null,
+      ),
+      Expense(
+        amount: 1000,
+        desc: "Navigation system upgrade",
+        time: DateTime(2085, 3, 14),
+        currency: "GALC",
+        trip: null,
+        budget: null,
+      ),
+    ],
+  ),
+  Trip(
+    name: "Vacation to Bikini Bottom",
+    destinations: ["Bikini Bottom", "Rock Bottom", "Jellyfish Fields"],
+    startDate: DateTime(2025, 6, 10),
+    endDate: DateTime(2025, 6, 20),
+    defaultCurrency: "USD",
+    budgets: [
+      Budget(
+        name: "Lodging",
+        desc: "Stay at the Pineapple under the sea",
+        amount: 1200,
+        period: Period.custom,
+        customPeriod: 10,
+        trip: null,
+        expenses: [
+          Expense(
+            amount: 200,
+            desc: "Security deposit for pineapple dome",
+            time: DateTime(2025, 6, 10),
+            currency: "USD",
+            trip: null,
+            budget: null,
+          ),
+        ],
+      ),
+      Budget(
+        name: "Entertainment",
+        desc: "Jellyfishing and Krabby Patty feasts",
+        amount: 800,
+        period: Period.weekly,
+        customPeriod: null,
+        trip: null,
+        expenses: [
+          Expense(
+            amount: 50.5,
+            desc: "Jellyfish net rental",
+            time: DateTime(2025, 6, 11),
+            currency: "USD",
+            trip: null,
+            budget: null,
+          ),
+          Expense(
+            amount: 25.75,
+            desc: "Lunch at The Krusty Krab",
+            time: DateTime(2025, 6, 12),
+            currency: "USD",
+            trip: null,
+            budget: null,
+          ),
+        ],
+      ),
+    ],
+    expenses: [
+      Expense(
+        amount: 100,
+        desc: "Bus fare to Rock Bottom",
+        time: DateTime(2025, 6, 14),
+        currency: "USD",
+        trip: null,
+        budget: null,
+      ),
+    ],
+  ),
+  Trip(
+    name: "Expedition to Frostvale Peaks",
+    destinations: ["Frostvale", "Icebridge", "Echo Hollow"],
+    startDate: DateTime(2026, 1, 5),
+    endDate: DateTime(2026, 1, 25),
+    defaultCurrency: "CAD",
+    budgets: [
+      Budget(
+        name: "Gear & Clothing",
+        desc: "Thermal gear, snow boots, and survival kits",
+        amount: 2500,
+        period: Period.non,
+        customPeriod: null,
+        trip: null,
+        expenses: [
+          Expense(
+            amount: 450.99,
+            desc: "Thermal sleeping bag",
+            time: DateTime(2026, 1, 3),
+            currency: "CAD",
+            trip: null,
+            budget: null,
+          ),
+          Expense(
+            amount: 150.0,
+            desc: "Glacier crampons",
+            time: DateTime(2026, 1, 4),
+            currency: "CAD",
+            trip: null,
+            budget: null,
+          ),
+        ],
+      ),
+      Budget(
+        name: "Transport",
+        desc: "Helicopter charter and snowmobile fuel",
+        amount: 4000,
+        period: Period.weekly,
+        customPeriod: null,
+        trip: null,
+        expenses: [
+          Expense(
+            amount: 600.0,
+            desc: "Snowmobile rental",
+            time: DateTime(2026, 1, 7),
+            currency: "CAD",
+            trip: null,
+            budget: null,
+          ),
+          Expense(
+            amount: 1800.5,
+            desc: "Helicopter ride to base camp",
+            time: DateTime(2026, 1, 5),
+            currency: "CAD",
+            trip: null,
+            budget: null,
+          ),
+        ],
+      ),
+    ],
+    expenses: [
+      Expense(
+        amount: 75,
+        desc: "Hot cocoa supplies",
+        time: DateTime(2026, 1, 6),
+        currency: "CAD",
+        trip: null,
+        budget: null,
+      ),
+      Expense(
+        amount: 200,
+        desc: "Ice axe sharpening service",
+        time: DateTime(2026, 1, 9),
+        currency: "CAD",
+        trip: null,
+        budget: null,
+      ),
+    ],
+  ),
+];
 
 // dump trip data to database for dev purposes // FIXME: not for prod
 // Issue URL: https://github.com/Supalien/WiseBud/issues/21
@@ -190,6 +414,9 @@ class _MyHomePageState extends State<MyHomePage> {
               var db = context.read<AppDatabase>();
               dumpTrip(db, fakeTrip);
               dumpTrip(db, fakeTrip2);
+              for (var t in fakeTrips) {
+                dumpTrip(db, t);
+              }
               // stopwatch.stop();
               // print(stopwatch.elapsed.toString());
               tripsProvider.loadAll();
@@ -290,9 +517,10 @@ void _newExpense(BuildContext context) async {
   if (!context.mounted) return; // widget doesnt exist
   if (result == null) return; // result of back button
 
-  Expense newExpense = Expense(amount: result.amount, time: result.time);
+  Expense newExpense = Expense(amount: result.amount);
   newExpense.desc = result.desc ?? newExpense.desc;
   newExpense.currency = result.currency ?? newExpense.currency;
+  newExpense.time = result.time ?? newExpense.time;
   context.read<TripsProvider>().addExpense(newExpense, result.budget);
 }
 
