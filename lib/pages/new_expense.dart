@@ -82,8 +82,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
                 labelText: "Currency",
               ),
             ),
-            //ADDME: add a datetime picker to pick a time for the expense (default is the time the expense was crated)
-            //Issue URL: https://github.com/Supalien/WiseBud/issues/23
+            // ADDME: improve time picker, with a date picker dialogue and a hour-minute time dialogue.
             InputDatePickerFormField(
               firstDate: DateTime.fromMillisecondsSinceEpoch(0),
               lastDate: DateTime(9999),

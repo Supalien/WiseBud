@@ -14,14 +14,16 @@ class TripsProvider with ChangeNotifier {
   Trip? get trip => _trips[_currentTripId];
 
   TripsProvider(this.db, {int? currentTripId}) {
-    if (currentTripId != null && currentTripId >= 0 && _trips.containsKey(currentTripId)) {
+    if (currentTripId != null &&
+        currentTripId >= 0 &&
+        _trips.containsKey(currentTripId)) {
       _currentTripId = currentTripId;
     }
     loadAll();
   }
 
   Future<Trip> loadTrip(int id) async {
-    Trip t =  await db.loadTripById(id);
+    Trip t = await db.loadTripById(id);
     _trips[id] = t;
     return t;
   }
@@ -33,9 +35,8 @@ class TripsProvider with ChangeNotifier {
       _currentTripId = _currentTripId == -1 ? t.id : _currentTripId;
       if (t.id == _currentTripId) {
         _trips[t.id] = await db.loadTripById(t.id);
-      }
-      else {
-      _trips[t.id] = await db.lazyLoadTripById(t.id);
+      } else {
+        _trips[t.id] = await db.lazyLoadTripById(t.id);
       }
     }
     isLoading = false;
@@ -50,16 +51,16 @@ class TripsProvider with ChangeNotifier {
   // }
 
   // sets the current Trip
-  void select(int id) {
-    loadTrip(id).then((_){
-    _currentTripId = id;
-    notifyListeners();
+  Future<void> select(int id) {
+    return loadTrip(id).then((_) {
+      _currentTripId = id;
+      notifyListeners();
     });
   }
 
   void addFirst(Trip t) {
     // insert the trip to db and set it with the id given by db
-    db.into(db.tripItems).insert(t.toCompanion()).then((id) { 
+    db.into(db.tripItems).insert(t.toCompanion()).then((id) {
       t.id = id;
       _trips[id] = t;
       _currentTripId = id;
@@ -69,7 +70,7 @@ class TripsProvider with ChangeNotifier {
 
   Future<int> addTrip(Trip t) {
     // insert the trip to db and set it with the id given by db
-    return db.into(db.tripItems).insert(t.toCompanion()).then((id) { 
+    return db.into(db.tripItems).insert(t.toCompanion()).then((id) {
       t.id = id;
       _trips[id] = t;
       notifyListeners();
@@ -77,32 +78,31 @@ class TripsProvider with ChangeNotifier {
     });
   }
 
-  // void addTrips(List<Trip> ts) {
-  //   _trips.addAll(ts);
-  //   if (_currentTripId == -1 && _trips.isNotEmpty) {
-  //     _currentTripId = 0;
-  //   }
-  //   notifyListeners();
-  // }
-
-  // void removeTripAt(int i) {
-  //   _trips.removeAt(i);
-  //   if (_trips.isEmpty) {
-  //     _currentTripId = -1;
-  //   }
-  //   if (i < _currentTripId) {
-  //     _currentTripId--;
-  //   }
-  //   if (i == _currentTripId) {
-  //     _currentTripId = 0;
-  //   }
-  //   notifyListeners();
-  // }
-
-  // void removeTrip(Trip t) {
-  //   removeTripAt(_trips.indexOf(t));
-  // }
-
+  void removeTrip(int id) async {
+    if (_trips[id] == null) {
+      return;
+    }
+    for (Budget bud in _trips[id]!.budgets) {
+      if (bud.id != null) {
+        await db.removeBudget(bud.id!);
+      }
+    }
+    for (Expense ex in _trips[id]!.expenses) {
+      if (ex.id != null) {
+        await db.removeExpense(ex.id!);
+      }
+    }
+    await db.removeTrip(id).then((_) async {
+      // check if we to remove the seleced trip
+      if (_currentTripId == id) {
+        // select the first trip that is not the one we want to remove
+        await select(_trips.keys.firstWhere((key) => key != id));
+      }
+    }).then((_) {
+      _trips.remove(id);
+      notifyListeners();
+    });
+  }
 
   void addBudget(Budget b) {
     trip!.addBudget(b);

@@ -77,6 +77,18 @@ class AppDatabase extends _$AppDatabase {
   Future<Trip> lazyLoadTripById(int id) async {
     return Trip.fromItem(await managers.tripItems.filter((f) => f.id(id)).getSingle());
   }
+
+  Future<void> removeTrip(int id) async {
+    await managers.tripItems.filter((t) => t.id(id)).delete();
+  }
+
+  Future<void> removeBudget(int id) async {
+    await managers.budgetItems.filter((b) => b.id(id)).delete();
+  }
+
+  Future<void> removeExpense(int id) async {
+    await managers.expenseItems.filter((e) => e.id(id)).delete();
+  }
 }
 
 

@@ -21,7 +21,7 @@ class TripCard extends StatelessWidget {
         subtitle: trip.destinations.isNotEmpty
             ? Text("To ${trip.destinations.join(", ")}\n${trip.defaultCurrency}")
             : Text(trip.defaultCurrency),
-        trailing: TripMenuAnchor(),
+        trailing: TripMenuAnchor(tripId),
         tileColor: Theme.of(context).colorScheme.secondaryContainer,
         selected: tripsProvider.trip == trip,
         selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
@@ -36,10 +36,13 @@ class TripCard extends StatelessWidget {
 }
 
 class TripMenuAnchor extends StatelessWidget {
-  const TripMenuAnchor({super.key});
+  const TripMenuAnchor(this.tripId, {super.key});
+
+  final int tripId;
 
   @override
   Widget build(BuildContext context) {
+    TripsProvider tripsProvider = context.read<TripsProvider>();
     return MenuAnchor(
       builder: (context, controller, child) {
         return IconButton(
@@ -56,6 +59,7 @@ class TripMenuAnchor extends StatelessWidget {
       menuChildren: [
         MenuItemButton(trailingIcon: Icon(Icons.edit), child: Text("Edit")),
         MenuItemButton(
+          onPressed: () => tripsProvider.removeTrip(tripId),
           trailingIcon: Icon(Icons.delete),
           style: ButtonStyle(
             iconColor: WidgetStateProperty.all(
