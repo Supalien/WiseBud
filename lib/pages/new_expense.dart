@@ -83,6 +83,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
               ),
             ),
             // ADDME: improve time picker, with a date picker dialogue and a hour-minute time dialogue.
+            // Issue URL: https://github.com/Supalien/WiseBud/issues/32
             InputDatePickerFormField(
               firstDate: DateTime.fromMillisecondsSinceEpoch(0),
               lastDate: DateTime(9999),
