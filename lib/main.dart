@@ -470,16 +470,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   tripsProvider.trips.entries.map(
                     (entry) => TripCard(trip: entry.value, tripId: entry.key),
                   ),
-                  // children: List<Widget>.from(
-                  //   tripsProvider.trips.map(
-                  // (t) => TextButton(
-                  //   onPressed: () {
-                  //     tripsProvider.select(t);
-                  //     Navigator.pop(context); // close drawer
-                  //   },
-                  //   child: Text("Name: ${t.name}"),
-                  // ),
-                  //   ),
                 ),
               ),
             ),
