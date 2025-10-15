@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/models/trips_provider.dart';
+import 'package:wisebud/pages/budget_page.dart';
 import 'package:wisebud/pages/new_budget.dart';
 import 'package:wisebud/utils.dart';
 
@@ -85,7 +86,9 @@ class BudgetInfoWidget extends StatelessWidget {
         ),
         child: InkWell(
           customBorder: CircleBorder(),
-          onTap: () {}, // ADDME: open budget editor screen
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => BudgetPage(budget)));
+          }, // ADDME: open budget editor screen
                         // Issue URL: https://github.com/Supalien/WiseBud/issues/22
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
