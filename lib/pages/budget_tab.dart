@@ -88,8 +88,7 @@ class BudgetInfoWidget extends StatelessWidget {
           customBorder: CircleBorder(),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => BudgetPage(budget)));
-          }, // ADDME: open budget editor screen
-                        // Issue URL: https://github.com/Supalien/WiseBud/issues/22
+          },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

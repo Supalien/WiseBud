@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wisebud/models/budget.dart';
+import 'package:wisebud/widgets/expenses_list.dart';
 
 class BudgetPage extends StatelessWidget {
   const BudgetPage(this.budget, {super.key});
@@ -16,7 +17,8 @@ class BudgetPage extends StatelessWidget {
         children: [
           LinearProgressIndicator(
             value: budget.totalExpenses / budget.amount,
-          )
+          ),
+          Expanded(child: ExpensesList(expenses: budget.expenses, title: "Budget expenses:",))
         ],
       ),
     );

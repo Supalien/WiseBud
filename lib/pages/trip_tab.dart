@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/utils.dart';
+import 'package:wisebud/widgets/expenses_list.dart';
 
 class TripTab extends StatelessWidget {
   const TripTab({super.key});
@@ -88,34 +89,6 @@ class TripBudgetInfoWidget extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class ExpensesList extends StatelessWidget {
-  const ExpensesList({super.key, required this.expenses});
-
-  final List<Expense> expenses;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          "Latest expenses:",
-          style: TextStyle(fontWeight: FontWeight.bold),
-          textScaler: TextScaler.linear(1.2),
-        ),
-        Expanded(
-          child: ListView(
-            children: List<Widget>.from(
-              expenses.map(
-                (exp) => ExpenseCard(exp),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
