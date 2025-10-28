@@ -10,8 +10,24 @@ typedef TripResult = ({
   String? defaultCurrency,
 });
 
+final DateTime firstDate = DateTime.fromMillisecondsSinceEpoch(0);
+final DateTime lastDate = DateTime(9999);
+
 class NewTripScreen extends StatefulWidget {
-  const NewTripScreen({super.key});
+  const NewTripScreen({
+    super.key,
+    this.name,
+    this.destinations,
+    this.startDate,
+    this.endDate,
+    this.defaultCurrency,
+  });
+
+  final String? name;
+  final List<String>? destinations;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final String? defaultCurrency;
 
   @override
   State<NewTripScreen> createState() => _NewTripScreenState();
@@ -20,14 +36,19 @@ class NewTripScreen extends StatefulWidget {
 class _NewTripScreenState extends State<NewTripScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String name = "unchanged";
+  String name = "";
   List<String> destinations = [];
-  DateTime startDate = DateTime.fromMillisecondsSinceEpoch(0);
-  DateTime endDate = DateTime(9999);
-  String defaultCurrency = "USD";
+  DateTime? startDate;
+  DateTime? endDate;
+  String? defaultCurrency;
 
   @override
   Widget build(BuildContext context) {
+    name = widget.name ?? name;
+    destinations = widget.destinations ?? destinations;
+    startDate = widget.startDate;
+    endDate = widget.endDate;
+    defaultCurrency = widget.defaultCurrency;
     TextEditingController destinationsController = TextEditingController();
     return Scaffold(
       appBar: AppBar(title: Text("New Trip")),
@@ -54,6 +75,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 return null;
               },
               autofocus: true,
+              initialValue: name,
             ),
             TextFormField(
               controller: destinationsController,
@@ -92,18 +114,20 @@ class _NewTripScreenState extends State<NewTripScreen> {
             ),
 
             InputDatePickerFormField(
-              firstDate: startDate,
-              lastDate: endDate,
+              firstDate: firstDate,
+              lastDate: lastDate,
               fieldLabelText: "Start date",
               onDateSaved: (value) => startDate = value,
               acceptEmptyDate: true,
+              initialDate: startDate,
             ),
             InputDatePickerFormField(
-              firstDate: startDate,
-              lastDate: endDate,
+              firstDate: firstDate,
+              lastDate: lastDate,
               fieldLabelText: "End date",
               onDateSaved: (value) => endDate = value,
               acceptEmptyDate: true,
+              initialDate: endDate,
             ),
 
             TextFormField(
@@ -112,6 +136,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 hintText: "Enter a currency",
                 labelText: "Default Currency",
               ),
+              initialValue: defaultCurrency,
             ),
 
             ElevatedButton(

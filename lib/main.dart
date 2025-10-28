@@ -501,7 +501,10 @@ void _newTrip(BuildContext context) async {
 void _newExpense(BuildContext context) async {
   final result = await Navigator.push<ExpenseResult>(
     context,
-    MaterialPageRoute(builder: (context) => NewExpenseScreen()),
+    MaterialPageRoute(
+      builder: (context) =>
+          NewExpenseScreen(currency: context.read<Trip>().defaultCurrency),
+    ),
   );
 
   if (!context.mounted) return; // widget doesnt exist

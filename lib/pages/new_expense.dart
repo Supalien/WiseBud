@@ -3,20 +3,33 @@ import 'package:provider/provider.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/trip.dart';
 
+typedef ExpenseResult = ({
+  double amount,
+  String? desc,
+  Budget? budget,
+  String? currency,
+  DateTime? time,
+});
+
 class NewExpenseScreen extends StatefulWidget {
-  const NewExpenseScreen({super.key});
+  const NewExpenseScreen({
+    super.key,
+    this.amount,
+    this.desc,
+    this.budget,
+    this.currency,
+    this.time,
+  });
+
+  final double? amount;
+  final String? desc;
+  final Budget? budget;
+  final String? currency;
+  final DateTime? time;
 
   @override
   State<NewExpenseScreen> createState() => _NewExpenseScreenState();
 }
-
-typedef ExpenseResult = ({
-  double amount,
-  Budget? budget,
-  String? currency,
-  String? desc,
-  DateTime? time,
-});
 
 class _NewExpenseScreenState extends State<NewExpenseScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -28,6 +41,11 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    amount = widget.amount ?? amount;
+    desc = widget.desc;
+    budget = widget.budget;
+    currency = widget.currency;
+    time = widget.time;
     return Scaffold(
       appBar: AppBar(title: Text("New Expense")),
       body: Form(
@@ -41,6 +59,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
                 hintText: "Enter amount",
                 labelText: "Amount *",
               ),
+              initialValue: amount == 0.0? null: amount.toString(),
               keyboardType: TextInputType.number,
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
@@ -63,15 +82,21 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
                 hintText: "Enter description",
                 labelText: "Description",
               ),
+              initialValue: desc,
             ),
-            DropdownMenu(
-              dropdownMenuEntries: List<DropdownMenuEntry>.from(
-                context.read<Trip>().budgets.map(
-                  (b) => DropdownMenuEntry(value: b, label: b.name),
+            Row(
+              children: [
+                DropdownMenu(
+                  dropdownMenuEntries: List<DropdownMenuEntry>.from(
+                    context.read<Trip>().budgets.map(
+                      (b) => DropdownMenuEntry(value: b, label: b.name),
+                    ),
+                  ),
+                  hintText: "Select Budget",
+                  onSelected: (value) => budget = value as Budget?,
+                  initialSelection: budget, // safe because if budget is not in the list of enties, the dropdownmenu widget sets the selected index as undefined
                 ),
-              ),
-              hintText: "Select Budget",
-              onSelected: (value) => budget = value as Budget?,
+              ],
             ),
             TextFormField(
               // ADDME: makes this a dropdown to select currency from a list of real currencies
@@ -81,6 +106,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
                 hintText: "Enter currency",
                 labelText: "Currency",
               ),
+              initialValue: currency,
             ),
             // ADDME: improve time picker, with a date picker dialogue and a hour-minute time dialogue.
             // Issue URL: https://github.com/Supalien/WiseBud/issues/32
@@ -88,7 +114,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
               firstDate: DateTime.fromMillisecondsSinceEpoch(0),
               lastDate: DateTime(9999),
               fieldLabelText: "Time",
-              initialDate: DateTime.now(),
+              initialDate: time ?? DateTime.now(),
               onDateSaved: (value) => time = value,
               acceptEmptyDate: true,
             ),

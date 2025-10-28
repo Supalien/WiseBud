@@ -3,11 +3,29 @@ import 'package:provider/provider.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/trip.dart';
 
-typedef BudgetResult = ({String name, int amount, String? desc, Period period, int? customPeriod});
+typedef BudgetResult = ({
+  String name,
+  int amount,
+  String? desc,
+  Period period,
+  int? customPeriod,
+});
 
 class NewBudgetScreen extends StatefulWidget {
-  const NewBudgetScreen({super.key});
+  const NewBudgetScreen({
+    super.key,
+    this.name,
+    this.amount,
+    this.desc,
+    this.period,
+    this.customPeriod,
+  });
 
+  final String? name;
+  final int? amount;
+  final String? desc;
+  final Period? period;
+  final int? customPeriod;
   @override
   State<NewBudgetScreen> createState() => _NewBudgetScreenState();
 }
@@ -21,6 +39,11 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
   int? customPeriod;
   @override
   Widget build(BuildContext context) {
+    name = widget.name ?? name;
+    amount = widget.amount ?? amount;
+    desc = widget.desc;
+    period = widget.period ?? period;
+    customPeriod = widget.customPeriod;
     return Scaffold(
       appBar: AppBar(title: Text("New Budget")),
       body: Form(
@@ -45,6 +68,7 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
                 }
                 return null;
               },
+              initialValue: name,
               autofocus: true,
             ),
             TextFormField(
@@ -61,8 +85,12 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
                   // not numeric
                   return "Amount should be a number!";
                 }
+                if (int.parse(value) <= 0) {
+                  return "Please enter a number bigger than zero.";
+                }
                 return null;
               },
+              initialValue: amount == 0? null: amount.toString(),
               keyboardType: TextInputType.number,
             ),
 
@@ -72,6 +100,7 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
                 hintText: "Enter description",
                 labelText: "Description",
               ),
+              initialValue: desc,
             ),
 
             Row(children: [Text("Period", textScaler: TextScaler.linear(1.2))]),
@@ -92,14 +121,14 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
                 if (p != Period.custom) customPeriod = null;
               }),
               onSaved: (p) => period = p ?? period,
-              value: Period.non,
+              value: period,
             ),
 
             if (period == Period.custom)
               TextFormField(
                 onSaved: (newValue) =>
                     customPeriod = int.tryParse(newValue ?? ""),
-                decoration: InputDecoration(hintText: "Enter custom period"),
+                decoration: InputDecoration(hintText: "Enter number of days", labelText: "Custom period"),
                 validator: (String? value) {
                   if (value == null ||
                       value.isEmpty ||
@@ -109,6 +138,7 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
                   return null;
                 },
                 keyboardType: TextInputType.number,
+                initialValue: customPeriod?.toString(),
               ),
 
             Divider(),

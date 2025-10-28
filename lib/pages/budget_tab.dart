@@ -87,7 +87,10 @@ class BudgetInfoWidget extends StatelessWidget {
         child: InkWell(
           customBorder: CircleBorder(),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => BudgetPage(budget)));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BudgetPage(budget)),
+            );
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -96,7 +99,9 @@ class BudgetInfoWidget extends StatelessWidget {
               Text(
                 '${formatDouble(budget.totalExpenses)} / ${budget.amount} ${context.read<Trip>().defaultCurrency}',
               ),
-              Text("${formatDouble(100 * budget.totalExpenses / budget.amount)}%"),
+              Text(
+                "${formatDouble(100 * budget.totalExpenses / budget.amount)}%",
+              ),
             ],
           ),
         ),
