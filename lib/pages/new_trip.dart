@@ -95,6 +95,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
               spacing: 10,
               children: List<Widget>.from(
                 // ADDME: removable destinations
+                // Issue URL: https://github.com/Supalien/WiseBud/issues/33
                 destinations.map(
                   (d) => Material(
                     color: Colors.transparent,
