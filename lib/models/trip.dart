@@ -35,13 +35,38 @@ class Trip {
        expenses = expenses ?? [],
        startDate = startDate ?? DateTime.now(),
        endDate = endDate ?? DateTime.now().add(Duration(days: 30)) {
-    for (Budget b in this.budgets) {
+    for (Budget b in budgets ?? []) {
       b.trip = this;
       this.expenses.addAll(b.expenses);
     }
-    for (Expense e in this.expenses) {
+    for (Expense e in expenses ?? []) {
       e.trip = this;
     }
+  }
+
+  Trip copyWith({
+      String? name,
+      List<String>? destinations,
+      DateTime? startDate,
+      DateTime? endDate,
+      String? defaultCurrency,
+
+      List<Budget>? budgets,
+      List<Expense>? expenses,
+  }) {
+    return Trip(
+      name: name ?? this.name,
+      destinations: destinations ?? this.destinations,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      defaultCurrency: defaultCurrency ?? this.defaultCurrency,
+
+      budgets: budgets ?? this.budgets,
+      expenses: expenses ?? this.expenses,
+
+      id: id,
+      createdAt: createdAt,
+    );
   }
 
   double get totalBudget => budgets.fold(

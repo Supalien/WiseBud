@@ -89,6 +89,18 @@ class AppDatabase extends _$AppDatabase {
   Future<void> removeExpense(int id) async {
     await managers.expenseItems.filter((e) => e.id(id)).delete();
   }
+
+  Future updateTrip(TripItemsCompanion entity) {
+    return update(tripItems).replace(entity);
+  }
+
+  Future updateBudget(BudgetItemsCompanion entity) {
+    return update(budgetItems).replace(entity);
+  }
+
+  Future updateExpense(ExpenseItemsCompanion entity) {
+    return update(expenseItems).replace(entity);
+  }
 }
 
 

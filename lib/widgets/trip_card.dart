@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/models/trips_provider.dart';
+import 'package:wisebud/pages/new_trip.dart';
 
 class TripCard extends StatelessWidget {
   const TripCard({super.key, required this.trip, required this.tripId});
@@ -19,7 +20,9 @@ class TripCard extends StatelessWidget {
         isThreeLine: true,
         // show destinations if exist. breaks the list to strings divided by ','
         subtitle: trip.destinations.isNotEmpty
-            ? Text("To ${trip.destinations.join(", ")}\n${trip.defaultCurrency}")
+            ? Text(
+                "To ${trip.destinations.join(", ")}\n${trip.defaultCurrency}",
+              )
             : Text(trip.defaultCurrency),
         trailing: TripMenuAnchor(tripId),
         tileColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -57,7 +60,11 @@ class TripMenuAnchor extends StatelessWidget {
         );
       },
       menuChildren: [
-        MenuItemButton(trailingIcon: Icon(Icons.edit), child: Text("Edit")),
+        MenuItemButton(
+          trailingIcon: Icon(Icons.edit),
+          onPressed: () => _editTrip(context, tripId),
+          child: Text("Edit"),
+        ),
         MenuItemButton(
           onPressed: () => tripsProvider.removeTrip(tripId),
           trailingIcon: Icon(Icons.delete),
@@ -72,6 +79,42 @@ class TripMenuAnchor extends StatelessWidget {
           child: Text("Delete"),
         ),
       ],
+    );
+  }
+
+  void _editTrip(BuildContext context, int tripId) async {
+    TripsProvider tp = context.read<TripsProvider>();
+    if (tp.trips[tripId] == null) return;
+    Trip trip = tp.trips[tripId]!;
+    // if the trip to edit is not the current trip, meaning is not already fully loaded
+    if (trip.id != context.read<Trip>().id) {
+      trip = await tp.loadTrip(tripId);
+    }
+
+    if (!context.mounted) return;
+    final result = await Navigator.push<TripResult>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewTripScreen(
+          name: trip.name,
+          destinations: trip.destinations,
+          startDate: trip.startDate,
+          endDate: trip.endDate,
+          defaultCurrency: trip.defaultCurrency,
+        ),
+      ),
+    );
+
+    if (result == null) return;
+
+    await tp.updateTrip(
+      tripId,
+      
+      name: result.name,
+      destinations: result.destinations,
+      startDate: result.startDate ?? trip.startDate,
+      endDate: result.endDate ?? trip.endDate,
+      defaultCurrency: result.defaultCurrency ?? trip.defaultCurrency,
     );
   }
 }

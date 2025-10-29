@@ -410,16 +410,21 @@ class _MyHomePageState extends State<MyHomePage> {
           ElevatedButton(
             child: const Text('test button'),
             onPressed: () async {
-              // Stopwatch stopwatch = Stopwatch()..start();
-              var db = context.read<AppDatabase>();
-              dumpTrip(db, fakeTrip);
-              dumpTrip(db, fakeTrip2);
-              for (var t in fakeTrips) {
-                dumpTrip(db, t);
-              }
-              // stopwatch.stop();
-              // print(stopwatch.elapsed.toString());
-              tripsProvider.loadAll();
+              // // Stopwatch stopwatch = Stopwatch()..start();
+              // var db = context.read<AppDatabase>();
+              // dumpTrip(db, fakeTrip);
+              // dumpTrip(db, fakeTrip2);
+              // for (var t in fakeTrips) {
+              //   dumpTrip(db, t);
+              // }
+              // // stopwatch.stop();
+              // // print(stopwatch.elapsed.toString());
+              // tripsProvider.loadAll();
+              
+              
+              TripsProvider tp = context.read<TripsProvider>();
+              Trip trip = tp.trips[3]!;
+              trip.name = "testinggggg";
             },
           ),
         ],

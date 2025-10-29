@@ -67,7 +67,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 if (value == null || value.isEmpty) {
                   return "Please enter some text";
                 }
-                if (context.read<TripsProvider>().trips.values.any(
+                if (value != widget.name && context.read<TripsProvider>().trips.values.any(
                   (t) => t.name == value,
                 )) {
                   return "Name should be unique.";
@@ -94,6 +94,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
             Row(
               spacing: 10,
               children: List<Widget>.from(
+                // ADDME: removable destinations
                 destinations.map(
                   (d) => Material(
                     color: Colors.transparent,

@@ -78,6 +78,34 @@ class TripsProvider with ChangeNotifier {
     });
   }
 
+  Future updateTrip(
+    int tripId, {
+    String? name,
+    List<String>? destinations,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? defaultCurrency,
+
+    List<Budget>? budgets,
+    List<Expense>? expenses,
+  }) async {
+    if (_trips[tripId] == null) return;
+
+    Trip updatedTrip = _trips[tripId]!.copyWith(
+    name: name,
+    destinations: destinations,
+    startDate: startDate,
+    endDate: endDate,
+    defaultCurrency: defaultCurrency,
+
+    budgets: budgets,
+    expenses: expenses,
+    );
+
+    _trips[tripId] = updatedTrip;
+    return db.updateTrip(updatedTrip.toCompanion()).then((_) => notifyListeners());
+  }
+
   void removeTrip(int id) async {
     if (_trips[id] == null) {
       return;
@@ -92,16 +120,19 @@ class TripsProvider with ChangeNotifier {
         await db.removeExpense(ex.id!);
       }
     }
-    await db.removeTrip(id).then((_) async {
-      // check if we to remove the seleced trip
-      if (_currentTripId == id) {
-        // select the first trip that is not the one we want to remove
-        await select(_trips.keys.firstWhere((key) => key != id));
-      }
-    }).then((_) {
-      _trips.remove(id);
-      notifyListeners();
-    });
+    await db
+        .removeTrip(id)
+        .then((_) async {
+          // check if we to remove the seleced trip
+          if (_currentTripId == id) {
+            // select the first trip that is not the one we want to remove
+            await select(_trips.keys.firstWhere((key) => key != id));
+          }
+        })
+        .then((_) {
+          _trips.remove(id);
+          notifyListeners();
+        });
   }
 
   void addBudget(Budget b) {
