@@ -86,8 +86,6 @@ class TripsProvider with ChangeNotifier {
     DateTime? endDate,
     String? defaultCurrency,
 
-    List<Budget>? budgets,
-    List<Expense>? expenses,
   }) async {
     if (_trips[tripId] == null) return;
 
@@ -97,9 +95,6 @@ class TripsProvider with ChangeNotifier {
     startDate: startDate,
     endDate: endDate,
     defaultCurrency: defaultCurrency,
-
-    budgets: budgets,
-    expenses: expenses,
     );
 
     _trips[tripId] = updatedTrip;
@@ -143,9 +138,11 @@ class TripsProvider with ChangeNotifier {
   }
 
   void addExpense(Expense ex, [Budget? b]) {
-    trip!.addExpense(ex);
     if (b != null) {
       b.addExpense(ex);
+    }
+    else {
+      trip!.addExpense(ex);
     }
     db.into(db.expenseItems).insert(ex.toCompanion()).then((id) => ex.id = id);
     notifyListeners();

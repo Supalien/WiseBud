@@ -37,6 +37,17 @@ class Budget {
     }
   }
 
+  Budget copyWith({
+    String? name,
+    int? amount,
+    String? desc,
+    Period? period,
+    int? customPeriod,
+    List<Expense>? expenses,
+  }) {
+    return Budget(name: name ?? this.name, amount: amount ?? this.amount);
+  }
+
   int get periodDays => switch (period) {
     Period.daily => 1,
     Period.weekly => 7,

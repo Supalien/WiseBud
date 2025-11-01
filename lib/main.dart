@@ -420,11 +420,30 @@ class _MyHomePageState extends State<MyHomePage> {
               // // stopwatch.stop();
               // // print(stopwatch.elapsed.toString());
               // tripsProvider.loadAll();
-              
-              
+
               TripsProvider tp = context.read<TripsProvider>();
-              Trip trip = tp.trips[3]!;
-              trip.name = "testinggggg";
+              Trip t = tp.trip!;
+              // Trip t = Trip(
+              //   name: "test",
+              //   budgets: [
+              //     Budget(
+              //       name: 'b1',
+              //       amount: 1000,
+              //       expenses: [Expense(amount: 1), Expense(amount: 2)],
+              //     ),
+              //     Budget(
+              //       name: 'b2',
+              //       amount: 1000,
+              //       expenses: [Expense(amount: 3)],
+              //     ),
+              //   ],
+              //   expenses: [Expense(amount: 4), Expense(amount: 5), Expense(amount: 6)]
+              // );
+              print(t.allExpenses);
+              print("we have ${t.allExpenses.length} expenses");
+              t = t.copyWith(name: "different name");
+              print(t.allExpenses);
+              print("we have ${t.allExpenses.length} expenses");
             },
           ),
         ],

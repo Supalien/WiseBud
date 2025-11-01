@@ -12,13 +12,21 @@ class Trip {
   String defaultCurrency;
 
   List<Budget> budgets;
-  List<Expense> expenses;
+  List<Expense> expenses; // only expenses that are not in a budget
 
   int? id;
   DateTime? createdAt;
   // String? userId;
 
   int get lengthDays => endDate.difference(startDate).inDays;
+  // all expenses including budget expenses and expenses that are not in a budget
+  List<Expense> get allExpenses => [
+    ...expenses,
+    ...budgets.expand((b) => b.expenses),
+  ];
+  // only budget expenses
+  List<Expense> get budgetExpenses =>
+      budgets.expand((b) => b.expenses).toList();
 
   Trip({
     required this.name,
@@ -31,28 +39,24 @@ class Trip {
     this.id,
     this.createdAt,
   }) : destinations = destinations ?? [],
-       budgets = budgets ?? [],
-       expenses = expenses ?? [],
+       budgets = [],
+       expenses = [],
        startDate = startDate ?? DateTime.now(),
        endDate = endDate ?? DateTime.now().add(Duration(days: 30)) {
     for (Budget b in budgets ?? []) {
-      b.trip = this;
-      this.expenses.addAll(b.expenses);
+      addBudget(b);
     }
     for (Expense e in expenses ?? []) {
-      e.trip = this;
+      addExpense(e);
     }
   }
 
   Trip copyWith({
-      String? name,
-      List<String>? destinations,
-      DateTime? startDate,
-      DateTime? endDate,
-      String? defaultCurrency,
-
-      List<Budget>? budgets,
-      List<Expense>? expenses,
+    String? name,
+    List<String>? destinations,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? defaultCurrency,
   }) {
     return Trip(
       name: name ?? this.name,
@@ -61,8 +65,8 @@ class Trip {
       endDate: endDate ?? this.endDate,
       defaultCurrency: defaultCurrency ?? this.defaultCurrency,
 
-      budgets: budgets ?? this.budgets,
-      expenses: expenses ?? this.expenses,
+      budgets: budgets,
+      expenses: expenses,
 
       id: id,
       createdAt: createdAt,
@@ -76,19 +80,21 @@ class Trip {
         : sum + b.amount * lengthDays / b.periodDays,
   );
 
-  double get totalExpenses => expenses.fold(0, (sum, e) => sum + e.amount);
+  double get totalExpenses => allExpenses.fold(0, (sum, e) => sum + e.amount);
 
   double get monthlyBudget => (budgets.where(
     (b) => b.periodDays > 0,
   )).fold(0, (sum, b) => sum + b.amount * currentMonthLength() / b.periodDays);
 
-  double get monthlyExpenses => (expenses.where(
+  double get monthlyExpenses => (budgetExpenses.where(
     (e) =>
-        e.budget != null && e.budget!.periodDays > 0 && isInThisMonth(e.time),
+        e.budget!.periodDays > 0 && isInThisMonth(e.time),
   )).fold(0, (sum, e) => sum + e.amount);
 
   void addExpense(Expense ex) {
-    expenses.add(ex);
+    if (ex.budget != null) {
+      expenses.add(ex);
+    }
     ex.trip = this;
     ex.tripId = id;
   }

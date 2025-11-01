@@ -36,7 +36,7 @@ class TripTab extends StatelessWidget {
           child: ExpensesList(
             // the 5 latest
             expenses:
-                (trip.expenses.toList()
+                (trip.allExpenses
                       ..sort((a, b) => a.time.compareTo(b.time)))
                     .reversed
                     .toList(),
