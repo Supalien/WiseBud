@@ -33,6 +33,27 @@ class Expense {
     this.time = time ?? DateTime.now();
   }
 
+  Expense copyWith({
+    double? amount,
+    String? desc,
+    DateTime? time,
+    String? currency,
+  }) {
+    return Expense(
+      amount: amount ?? this.amount,
+      desc: desc ?? this.desc,
+      time: time ?? this.time,
+      currency: currency ?? this.currency,
+
+      trip: trip,
+      budget: budget,
+      id: id,
+      createdAt: createdAt,
+      tripId: tripId,
+      budgetId: budgetId,
+    );
+  }
+
   factory Expense.fromItem(ExpenseItem item, {Trip? trip, Budget? budget}) {
     return Expense(
       id: item.id,
@@ -67,7 +88,8 @@ class Expense {
   }
 
   @override
-  String toString() => "Expense $amount $currency ${id!=null? "id=$id" : ""}";
+  String toString() =>
+      "Expense $amount $currency ${id != null ? "id=$id" : ""}";
 
   // factory Expense.fromJson(Map<String, dynamic> m) {
   //   var e = Expense(

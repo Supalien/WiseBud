@@ -31,9 +31,9 @@ class Budget {
     this.id,
     this.createdAt,
     this.tripId,
-  }) : expenses = expenses ?? [] {
+  }) : expenses = [] {
     for (Expense e in this.expenses) {
-      e.budget = this;
+      addExpense(e);
     }
   }
 
@@ -45,7 +45,19 @@ class Budget {
     int? customPeriod,
     List<Expense>? expenses,
   }) {
-    return Budget(name: name ?? this.name, amount: amount ?? this.amount);
+    return Budget(
+      name: name ?? this.name,
+      amount: amount ?? this.amount,
+      desc: desc ?? this.desc,
+      period: period ?? this.period,
+      customPeriod: customPeriod ?? this.customPeriod,
+
+      trip: trip,
+      expenses: expenses,
+      id: id,
+      createdAt: createdAt,
+      tripId: tripId,
+    );
   }
 
   int get periodDays => switch (period) {
