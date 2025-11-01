@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/utils.dart';
 import 'package:wisebud/widgets/expenses_list.dart';
@@ -32,16 +31,7 @@ class TripTab extends StatelessWidget {
           ],
         ),
         Padding(padding: EdgeInsetsGeometry.all(10)),
-        Expanded(
-          child: ExpensesList(
-            // the 5 latest
-            expenses:
-                (trip.allExpenses
-                      ..sort((a, b) => a.time.compareTo(b.time)))
-                    .reversed
-                    .toList(),
-          ),
-        ),
+        Expanded(child: ExpensesList(expenses: trip.allExpenses)),
       ],
     );
   }
@@ -87,30 +77,6 @@ class TripBudgetInfoWidget extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class ExpenseCard extends StatelessWidget {
-  const ExpenseCard(this.expense, {
-    super.key,
-  });
-
-  final Expense expense;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        onTap: (){},
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-        isThreeLine: true,
-        title: Text("${expense.amount} ${expense.currency}"),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text(expense.desc), Text(expense.time.toString())],
         ),
       ),
     );

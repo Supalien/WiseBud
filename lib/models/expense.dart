@@ -36,17 +36,18 @@ class Expense {
   Expense copyWith({
     double? amount,
     String? desc,
-    DateTime? time,
+    Budget? budget,
     String? currency,
+    DateTime? time,
   }) {
     return Expense(
       amount: amount ?? this.amount,
       desc: desc ?? this.desc,
-      time: time ?? this.time,
+      budget: budget ?? this.budget,
       currency: currency ?? this.currency,
+      time: time ?? this.time,
 
       trip: trip,
-      budget: budget,
       id: id,
       createdAt: createdAt,
       tripId: tripId,

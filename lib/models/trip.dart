@@ -92,7 +92,7 @@ class Trip {
   )).fold(0, (sum, e) => sum + e.amount);
 
   void addExpense(Expense ex) {
-    if (ex.budget != null) {
+    if (ex.budgetId == null) {
       expenses.add(ex);
     }
     ex.trip = this;

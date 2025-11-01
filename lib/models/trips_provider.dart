@@ -85,20 +85,41 @@ class TripsProvider with ChangeNotifier {
     DateTime? startDate,
     DateTime? endDate,
     String? defaultCurrency,
-
   }) async {
     if (_trips[tripId] == null) return;
 
     Trip updatedTrip = _trips[tripId]!.copyWith(
-    name: name,
-    destinations: destinations,
-    startDate: startDate,
-    endDate: endDate,
-    defaultCurrency: defaultCurrency,
+      name: name,
+      destinations: destinations,
+      startDate: startDate,
+      endDate: endDate,
+      defaultCurrency: defaultCurrency,
     );
 
     _trips[tripId] = updatedTrip;
-    return db.updateTrip(updatedTrip.toCompanion()).then((_) => notifyListeners());
+    return db
+        .updateTrip(updatedTrip.toCompanion())
+        .then((_) => notifyListeners());
+  }
+
+  Future<Expense> updateExpense(
+    Expense ex, {
+    double? amount,
+    String? desc,
+    Budget? budget,
+    String? currency,
+    DateTime? time,
+  }) async {
+    Expense updatedExpense = ex.copyWith(
+      amount: amount,
+      desc: desc,
+      budget: budget,
+      currency: currency,
+      time: time,
+    );
+    return db
+        .updateExpense(updatedExpense.toCompanion())
+        .then((_) => updatedExpense);
   }
 
   void removeTrip(int id) async {
@@ -140,8 +161,7 @@ class TripsProvider with ChangeNotifier {
   void addExpense(Expense ex, [Budget? b]) {
     if (b != null) {
       b.addExpense(ex);
-    }
-    else {
+    } else {
       trip!.addExpense(ex);
     }
     db.into(db.expenseItems).insert(ex.toCompanion()).then((id) => ex.id = id);
