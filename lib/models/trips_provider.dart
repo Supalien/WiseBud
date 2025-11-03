@@ -78,6 +78,23 @@ class TripsProvider with ChangeNotifier {
     });
   }
 
+  void addBudget(Budget b) {
+    trip!.addBudget(b);
+    // insert budget to db and set budget id to id given by db
+    db.into(db.budgetItems).insert(b.toCompanion()).then((id) => b.id = id);
+    notifyListeners();
+  }
+
+  void addExpense(Expense ex, [Budget? b]) {
+    if (b != null) {
+      b.addExpense(ex);
+    } else {
+      trip!.addExpense(ex);
+    }
+    db.into(db.expenseItems).insert(ex.toCompanion()).then((id) => ex.id = id);
+    notifyListeners();
+  }
+
   Future updateTrip(
     int tripId, {
     String? name,
@@ -100,6 +117,10 @@ class TripsProvider with ChangeNotifier {
     return db
         .updateTrip(updatedTrip.toCompanion())
         .then((_) => notifyListeners());
+  }
+
+  updateBudget() {
+    "Not implemented";
   }
 
   Future<Expense> updateExpense(
@@ -151,20 +172,23 @@ class TripsProvider with ChangeNotifier {
         });
   }
 
-  void addBudget(Budget b) {
-    trip!.addBudget(b);
-    // insert budget to db and set budget id to id given by db
-    db.into(db.budgetItems).insert(b.toCompanion()).then((id) => b.id = id);
-    notifyListeners();
+  void removeBudget(){
+    "Not implemented";
   }
 
-  void addExpense(Expense ex, [Budget? b]) {
-    if (b != null) {
-      b.addExpense(ex);
-    } else {
-      trip!.addExpense(ex);
+  void removeExpense(Expense e) async {
+    if (!trip!.allExpenses.contains(e)) return;
+
+    if (trip!.expenses.contains(e)) {
+      trip!.expenses.remove(e);
     }
-    db.into(db.expenseItems).insert(ex.toCompanion()).then((id) => ex.id = id);
-    notifyListeners();
+    // if expense is not a trip expense, it has to be a budget expense
+    else {
+      e.budget!.expenses.remove(e);
+    }
+
+    if (e.id != null) {
+      await db.removeExpense(e.id!);
+    }
   }
 }
