@@ -34,6 +34,41 @@ Future<void> main() async {
   );
 }
 
+void test(BuildContext context) async {
+    var db = context.read<AppDatabase>();
+    dumpTrip(db, fakeTrip);
+    dumpTrip(db, fakeTrip2);
+    for (var t in fakeTrips) {
+      dumpTrip(db, t);
+    }
+
+    TripsProvider tp = context.read<TripsProvider>();
+    tp.loadAll();
+
+    // Trip t = tp.trip!;
+    // // Trip t = Trip(
+    // //   name: "test",
+    // //   budgets: [
+    // //     Budget(
+    // //       name: 'b1',
+    // //       amount: 1000,
+    // //       expenses: [Expense(amount: 1), Expense(amount: 2)],
+    // //     ),
+    // //     Budget(
+    // //       name: 'b2',
+    // //       amount: 1000,
+    // //       expenses: [Expense(amount: 3)],
+    // //     ),
+    // //   ],
+    // //   expenses: [Expense(amount: 4), Expense(amount: 5), Expense(amount: 6)]
+    // // );
+    // print(t.allExpenses);
+    // print("we have ${t.allExpenses.length} expenses");
+    // t = t.copyWith(name: "different name");
+    // print(t.allExpenses);
+    // print("we have ${t.allExpenses.length} expenses");
+}
+
 //fake data
 final Trip fakeTrip = Trip(
   name: 'My Dream Trip',
@@ -317,7 +352,7 @@ void dumpTrip(AppDatabase db, Trip trip) async {
       e.budgetId = budgetId;
     }
   }
-  for (var e in trip.expenses) {
+  for (var e in trip.allExpenses) {
     e.tripId = tripId;
     await db.into(db.expenseItems).insert(e.toCompanion());
   }
@@ -409,42 +444,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           ElevatedButton(
             child: const Text('test button'),
-            onPressed: () async {
-              // // Stopwatch stopwatch = Stopwatch()..start();
-              // var db = context.read<AppDatabase>();
-              // dumpTrip(db, fakeTrip);
-              // dumpTrip(db, fakeTrip2);
-              // for (var t in fakeTrips) {
-              //   dumpTrip(db, t);
-              // }
-              // // stopwatch.stop();
-              // // print(stopwatch.elapsed.toString());
-              // tripsProvider.loadAll();
-
-              TripsProvider tp = context.read<TripsProvider>();
-              Trip t = tp.trip!;
-              // Trip t = Trip(
-              //   name: "test",
-              //   budgets: [
-              //     Budget(
-              //       name: 'b1',
-              //       amount: 1000,
-              //       expenses: [Expense(amount: 1), Expense(amount: 2)],
-              //     ),
-              //     Budget(
-              //       name: 'b2',
-              //       amount: 1000,
-              //       expenses: [Expense(amount: 3)],
-              //     ),
-              //   ],
-              //   expenses: [Expense(amount: 4), Expense(amount: 5), Expense(amount: 6)]
-              // );
-              print(t.allExpenses);
-              print("we have ${t.allExpenses.length} expenses");
-              t = t.copyWith(name: "different name");
-              print(t.allExpenses);
-              print("we have ${t.allExpenses.length} expenses");
-            },
+            onPressed: () => test(context),
           ),
         ],
       ),

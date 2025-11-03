@@ -7,15 +7,9 @@ import 'package:wisebud/pages/budget_page.dart';
 import 'package:wisebud/pages/new_budget.dart';
 import 'package:wisebud/utils.dart';
 
-class BudgetTab extends StatefulWidget {
+class BudgetTab extends StatelessWidget {
   const BudgetTab({super.key});
 
-  @override
-  State<BudgetTab> createState() => _BudgetTabState();
-}
-
-class _BudgetTabState extends State<BudgetTab> {
-  String test = "";
   @override
   Widget build(BuildContext context) {
     List<Budget> budgets = context.select<Trip, List<Budget>>((t) => t.budgets);

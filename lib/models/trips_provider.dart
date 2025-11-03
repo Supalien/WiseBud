@@ -172,8 +172,19 @@ class TripsProvider with ChangeNotifier {
         });
   }
 
-  void removeBudget(){
-    "Not implemented";
+  void removeBudget(Budget b) async {
+    if (!trip!.budgets.contains(b)) return;
+    trip!.budgets.remove(b);
+
+    for (Expense exp in b.expenses) {
+      await db.removeExpense(exp.id ?? -1);
+    }
+
+    if (b.id != null) {
+      await db.removeBudget(b.id!);
+    }
+
+    notifyListeners();
   }
 
   void removeExpense(Expense e) async {

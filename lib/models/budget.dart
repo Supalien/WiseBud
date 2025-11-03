@@ -32,7 +32,7 @@ class Budget {
     this.createdAt,
     this.tripId,
   }) : expenses = [] {
-    for (Expense e in this.expenses) {
+    for (Expense e in expenses ?? []) {
       addExpense(e);
     }
   }
