@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:wisebud/main.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trips_provider.dart';
 import 'package:wisebud/pages/new_expense.dart';
@@ -60,7 +61,7 @@ class ExpenseCard extends StatelessWidget {
     if (result == null) return;
     if (!context.mounted) return;
 
-    Expense updatedExpense = await context.read<TripsProvider>().updateExpense(
+    Expense updatedExpense = await context.tripsProvider.updateExpense(
       e,
       amount: result.amount,
       desc: result.desc,

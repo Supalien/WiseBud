@@ -42,7 +42,7 @@ void test(BuildContext context) async {
       dumpTrip(db, t);
     }
 
-    TripsProvider tp = context.read<TripsProvider>();
+    TripsProvider tp = context.tripsProvider;
     tp.loadAll();
 
     // Trip t = tp.trip!;
@@ -505,7 +505,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 void _newTrip(BuildContext context) async {
-  TripsProvider tp = context.read<TripsProvider>();
+  TripsProvider tp = context.tripsProvider;
   final result = await Navigator.push<TripResult>(
     context,
     MaterialPageRoute(builder: (context) => NewTripScreen()),
@@ -538,7 +538,7 @@ void _newExpense(BuildContext context) async {
   newExpense.desc = result.desc ?? newExpense.desc;
   newExpense.currency = result.currency ?? newExpense.currency;
   newExpense.time = result.time ?? newExpense.time;
-  context.read<TripsProvider>().addExpense(newExpense, result.budget);
+  context.tripsProvider.addExpense(newExpense, result.budget);
 }
 
 extension ContextExtension on BuildContext {
@@ -553,4 +553,6 @@ extension ContextExtension on BuildContext {
       ),
     );
   }
+
+  TripsProvider get tripsProvider => read<TripsProvider>();
 }

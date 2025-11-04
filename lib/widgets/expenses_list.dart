@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wisebud/main.dart';
 import 'package:wisebud/models/expense.dart';
 import 'package:wisebud/models/trips_provider.dart';
 import 'package:wisebud/widgets/expense_card.dart';
@@ -50,7 +51,7 @@ class _ExpensesListState extends State<ExpensesList> {
                     });
                   },
                   onDelete: () async {
-                    context.read<TripsProvider>().removeExpense(exp);
+                    context.tripsProvider.removeExpense(exp);
                     setState(() {
                       widget.expenses.remove(exp);
                     });

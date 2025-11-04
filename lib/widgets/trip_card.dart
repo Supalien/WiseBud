@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wisebud/main.dart';
 import 'package:wisebud/models/trip.dart';
 import 'package:wisebud/models/trips_provider.dart';
 import 'package:wisebud/pages/new_trip.dart';
@@ -12,7 +13,7 @@ class TripCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TripsProvider tripsProvider = context.read<TripsProvider>();
+    TripsProvider tripsProvider = context.tripsProvider;
     return Card(
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -45,7 +46,7 @@ class TripMenuAnchor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TripsProvider tripsProvider = context.read<TripsProvider>();
+    TripsProvider tripsProvider = context.tripsProvider;
     return MenuAnchor(
       builder: (context, controller, child) {
         return IconButton(
@@ -83,7 +84,7 @@ class TripMenuAnchor extends StatelessWidget {
   }
 
   void _editTrip(BuildContext context, int tripId) async {
-    TripsProvider tp = context.read<TripsProvider>();
+    TripsProvider tp = context.tripsProvider;
     if (tp.trips[tripId] == null) return;
     Trip trip = tp.trips[tripId]!;
     // if the trip to edit is not the current trip, meaning is not already fully loaded

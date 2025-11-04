@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wisebud/main.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/trips_provider.dart';
+import 'package:wisebud/pages/new_budget.dart';
 import 'package:wisebud/widgets/expenses_list.dart';
 
-class BudgetPage extends StatelessWidget {
+class BudgetPage extends StatefulWidget {
   const BudgetPage(this.budget, {super.key});
 
   final Budget budget;
 
   @override
+  State<BudgetPage> createState() => _BudgetPageState();
+}
+
+class _BudgetPageState extends State<BudgetPage> {
+  Budget? _budget;
+  @override
   Widget build(BuildContext context) {
-    TripsProvider tp = context.read<TripsProvider>();
+    Budget budget = _budget ?? widget.budget;
+    TripsProvider tp = context.tripsProvider;
     return Scaffold(
       appBar: AppBar(
         title: Text(budget.name),
@@ -20,7 +29,13 @@ class BudgetPage extends StatelessWidget {
             menuChildren: [
               MenuItemButton(
                 trailingIcon: Icon(Icons.edit),
-                onPressed: () => tp.updateBudget(),
+                onPressed: () {
+                  _editBudget(context, budget, onEdit: (newBudget) {
+                    setState(() {
+                      _budget = newBudget;
+                    });
+                  });
+                  },
                 child: Text("Edit"),
               ),
               MenuItemButton(
@@ -57,7 +72,9 @@ class BudgetPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          LinearProgressIndicator(value: budget.totalExpenses / budget.amount),
+          LinearProgressIndicator(
+            value: budget.totalExpenses / budget.amount,
+          ),
           Expanded(
             child: ExpensesList(
               expenses: budget.expenses,
@@ -67,5 +84,34 @@ class BudgetPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _editBudget(BuildContext context, Budget budget, {required Function(Budget) onEdit}) async {
+    final result = await Navigator.push<BudgetResult>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewBudgetScreen(
+          amount: budget.amount,
+          name: budget.name,
+          desc: budget.desc,
+          period: budget.period,
+          customPeriod: budget.customPeriod,
+        ),
+      ),
+    );
+
+    if (result == null) return;
+    if (!context.mounted) return;
+
+    Budget updatedBudget = await context.tripsProvider.updateBudget(
+      budget,
+      amount: result.amount,
+      name: result.name,
+      desc: result.desc,
+      period: result.period,
+      customPeriod: result.customPeriod,
+    );
+
+    onEdit(updatedBudget);
   }
 }

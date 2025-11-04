@@ -119,8 +119,28 @@ class TripsProvider with ChangeNotifier {
         .then((_) => notifyListeners());
   }
 
-  updateBudget() {
-    "Not implemented";
+  Future<Budget> updateBudget(
+    Budget b, {
+    String? name,
+    String? desc,
+    int? amount,
+    Period? period,
+    int? customPeriod,
+  }) {
+    Budget updatedBudget = b.copyWith(
+      name: name,
+      desc: desc,
+      amount: amount,
+      period: period,
+      customPeriod: customPeriod,
+    );
+    return db
+        .updateBudget(updatedBudget.toCompanion())
+        .then((_) {
+          trip?.budgets[trip!.budgets.indexOf(b)] = updatedBudget;
+          notifyListeners();
+          return updatedBudget;
+          });
   }
 
   Future<Expense> updateExpense(
@@ -130,7 +150,7 @@ class TripsProvider with ChangeNotifier {
     Budget? budget,
     String? currency,
     DateTime? time,
-  }) async {
+  }) {
     Expense updatedExpense = ex.copyWith(
       amount: amount,
       desc: desc,

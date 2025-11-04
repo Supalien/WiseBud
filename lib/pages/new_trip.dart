@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wisebud/main.dart';
 import 'package:wisebud/models/trips_provider.dart';
 
 typedef TripResult = ({
@@ -67,7 +68,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                 if (value == null || value.isEmpty) {
                   return "Please enter some text";
                 }
-                if (value != widget.name && context.read<TripsProvider>().trips.values.any(
+                if (value != widget.name && context.tripsProvider.trips.values.any(
                   (t) => t.name == value,
                 )) {
                   return "Name should be unique.";
