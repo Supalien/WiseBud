@@ -61,9 +61,8 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
                 if (value == null || value.isEmpty) {
                   return "Please enter some text";
                 }
-                if (List<String>.from(
-                  context.read<Trip>().budgets.map((b) => b.name),
-                ).contains(value)) {
+                if (value != widget.name &&
+                    context.read<Trip>().budgets.any((b) => b.name == value)) {
                   return "Name should be unique.";
                 }
                 return null;
@@ -90,7 +89,7 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
                 }
                 return null;
               },
-              initialValue: amount == 0? null: amount.toString(),
+              initialValue: amount == 0 ? null : amount.toString(),
               keyboardType: TextInputType.number,
             ),
 
@@ -128,7 +127,10 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
               TextFormField(
                 onSaved: (newValue) =>
                     customPeriod = int.tryParse(newValue ?? ""),
-                decoration: InputDecoration(hintText: "Enter number of days", labelText: "Custom period"),
+                decoration: InputDecoration(
+                  hintText: "Enter number of days",
+                  labelText: "Custom period",
+                ),
                 validator: (String? value) {
                   if (value == null ||
                       value.isEmpty ||

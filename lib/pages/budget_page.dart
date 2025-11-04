@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:wisebud/main.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/trips_provider.dart';

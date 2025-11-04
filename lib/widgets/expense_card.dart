@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:provider/provider.dart';
 import 'package:wisebud/main.dart';
 import 'package:wisebud/models/expense.dart';
-import 'package:wisebud/models/trips_provider.dart';
 import 'package:wisebud/pages/new_expense.dart';
 
 class ExpenseCard extends StatelessWidget {

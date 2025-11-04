@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:wisebud/main.dart';
 import 'package:wisebud/models/budget.dart';
 import 'package:wisebud/models/trip.dart';
-import 'package:wisebud/models/trips_provider.dart';
 import 'package:wisebud/pages/budget_page.dart';
 import 'package:wisebud/pages/new_budget.dart';
 import 'package:wisebud/utils.dart';
